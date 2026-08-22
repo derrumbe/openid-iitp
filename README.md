@@ -19,7 +19,12 @@ over whether and how to respond.
 | Document | Source |
 | --- | --- |
 | OpenID Internet Infrastructure Threat Profile 1.0 — draft 01 | [`openid-iitp-1_0.md`](openid-iitp-1_0.md) |
+| Proposed charter / work item | [`CHARTER.md`](CHARTER.md) |
+| IITP Event Catalog — all candidate events | [`EVENT-CATALOG.md`](EVENT-CATALOG.md) |
 | IITP / WISE profile comparison | [`openid-iitp-wise-comparison.html`](openid-iitp-wise-comparison.html) |
+
+The rendered specification is published at
+<https://derrumbe.github.io/openid-iitp/>.
 
 The specification is written in [kramdown-rfc][kr] markdown and rendered with
 [xml2rfc][xr], the same toolchain used by the Shared Signals specifications.
