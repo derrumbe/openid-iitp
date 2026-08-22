@@ -23,8 +23,14 @@ over whether and how to respond.
 | IITP Event Catalog — all candidate events | [`EVENT-CATALOG.md`](EVENT-CATALOG.md) |
 | IITP / WISE profile comparison | [`openid-iitp-wise-comparison.html`](openid-iitp-wise-comparison.html) |
 
-The rendered specification is published at
-<https://derrumbe.github.io/openid-iitp/>.
+All four documents are published at <https://derrumbe.github.io/openid-iitp/>:
+
+| Page | Link |
+| --- | --- |
+| Specification | <https://derrumbe.github.io/openid-iitp/> |
+| Charter | <https://derrumbe.github.io/openid-iitp/charter.html> |
+| Event catalog | <https://derrumbe.github.io/openid-iitp/event-catalog.html> |
+| IITP / WISE comparison | <https://derrumbe.github.io/openid-iitp/openid-iitp-wise-comparison.html> |
 
 The specification is written in [kramdown-rfc][kr] markdown and rendered with
 [xml2rfc][xr], the same toolchain used by the Shared Signals specifications.

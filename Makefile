@@ -38,6 +38,9 @@ publish: $(BUILD)/$(MAIN).html
 	rm -rf $(PUBLIC)
 	mkdir -p $(PUBLIC)
 	cp $(BUILD)/$(MAIN).html $(PUBLIC)/index.html
+	python3 tools/render-md.py CHARTER.md $(PUBLIC)/charter.html "IITP Proposed Charter"
+	python3 tools/render-md.py EVENT-CATALOG.md $(PUBLIC)/event-catalog.html "IITP Event Catalog"
+	cp openid-iitp-wise-comparison.html $(PUBLIC)/
 
 clean:
 	rm -rf $(BUILD) $(PUBLIC)

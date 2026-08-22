@@ -28,12 +28,10 @@ jobs:
         with:
           python-version: '3.12'
       - run: gem install kramdown-rfc
-      - run: pip install xml2rfc
+      - run: pip install xml2rfc markdown
       # Builds the spec and assembles the Pages content under public/
       # (public/index.html is build/openid-iitp-1_0.html).
       - run: make publish
-      # The IITP / WISE comparison is a standalone page served alongside the spec.
-      - run: cp openid-iitp-wise-comparison.html public/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
