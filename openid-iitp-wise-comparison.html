@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0, width=device-width">
+<meta name="author" content="Prepared for the OpenID Shared Signals Working Group">
+<meta name="description" content="A comparison of the Internet Infrastructure Threat Profile (IITP) and the Workload Identity Security Events (WISE) profile: where their event types overlap, where each is unique, and the difference in transmitter authority that underlies both.">
+<title>IITP / WISE Overlap</title>
+<style>
+  :root {
+    --ground:      #F7F8FA;
+    --surface:     #FFFFFF;
+    --surface-2:   #EFF2F6;
+    --ink:         #161A20;
+    --muted:       #5C6672;
+    --rule:        #D9DEE6;
+    --rule-soft:   #E7EBF1;
+
+    --iitp:        #C2582F;
+    --iitp-fill:   rgba(194, 88, 47, 0.13);
+    --iitp-soft:   #FAEFEA;
+
+    --wise:        #2C6C8C;
+    --wise-fill:   rgba(44, 108, 140, 0.13);
+    --wise-soft:   #EAF1F5;
+
+    --both:        #6B5A87;
+    --both-fill:   rgba(107, 90, 135, 0.20);
+    --both-soft:   #F0EDF4;
+
+    --maxw: 68rem;
+    --prose: 40rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:    #10141A;
+      --surface:   #171C24;
+      --surface-2: #1E242E;
+      --ink:       #E7EBF1;
+      --muted:     #96A1B0;
+      --rule:      #2C3541;
+      --rule-soft: #232A34;
+
+      --iitp:      #E8875C;
+      --iitp-fill: rgba(232, 135, 92, 0.17);
+      --iitp-soft: #2A1D16;
+
+      --wise:      #67AFD0;
+      --wise-fill: rgba(103, 175, 208, 0.17);
+      --wise-soft: #13222B;
+
+      --both:      #A995C4;
+      --both-fill: rgba(169, 149, 196, 0.24);
+      --both-soft: #211C2B;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:    #10141A;
+    --surface:   #171C24;
+    --surface-2: #1E242E;
+    --ink:       #E7EBF1;
+    --muted:     #96A1B0;
+    --rule:      #2C3541;
+    --rule-soft: #232A34;
+
+    --iitp:      #E8875C;
+    --iitp-fill: rgba(232, 135, 92, 0.17);
+    --iitp-soft: #2A1D16;
+
+    --wise:      #67AFD0;
+    --wise-fill: rgba(103, 175, 208, 0.17);
+    --wise-soft: #13222B;
+
+    --both:      #A995C4;
+    --both-fill: rgba(169, 149, 196, 0.24);
+    --both-soft: #211C2B;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 3rem 1.25rem 6rem;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; display: flex; flex-direction: column; gap: 3.25rem; }
+  .prose { max-width: var(--prose); }
+
+  h1, h2, h3, .label, .vitals, .lede, figcaption, table, .pill, .count {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  .label {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4.4vw, 2.9rem);
+    line-height: 1.1; font-weight: 700; letter-spacing: -0.022em;
+    margin: 0.55rem 0 0; text-wrap: balance;
+  }
+
+  .lede {
+    font-size: 1.075rem; line-height: 1.55; color: var(--muted);
+    margin: 1rem 0 0; max-width: 46rem; font-weight: 400;
+  }
+
+  h2 {
+    font-size: 1.4rem; font-weight: 600; letter-spacing: -0.014em;
+    margin: 0; padding-bottom: 0.7rem; border-bottom: 1px solid var(--rule);
+    text-wrap: balance;
+  }
+
+  h3 { font-size: 1.03rem; font-weight: 600; margin: 0 0 0.15rem; letter-spacing: -0.006em; }
+
+  p { margin: 0.85rem 0; }
+  section { display: flex; flex-direction: column; gap: 1.35rem; }
+
+  code, .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+  code {
+    font-size: 0.845em; background: var(--surface-2);
+    padding: 0.1em 0.34em; border-radius: 3px; word-break: break-word;
+  }
+
+  a { color: var(--wise); }
+
+  /* ---------- header vitals ---------- */
+  .vitals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 8px; padding: 1.15rem 1.25rem;
+    display: flex; flex-direction: column; gap: 0.5rem;
+    border-top: 3px solid var(--rule);
+  }
+  .card.iitp { border-top-color: var(--iitp); }
+  .card.wise { border-top-color: var(--wise); }
+  .card h3 { font-size: 1.12rem; }
+  .card .who { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+  .card dl { margin: 0.3rem 0 0; display: grid; grid-template-columns: auto 1fr; gap: 0.36rem 0.9rem; font-size: 0.83rem; }
+  .card dt { color: var(--muted); }
+  .card dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+  .count { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .card.iitp .count { color: var(--iitp); }
+  .card.wise .count { color: var(--wise); }
+
+  /* ---------- figures ---------- */
+  figure { margin: 0; display: flex; flex-direction: column; gap: 0.85rem; }
+  .figbox {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 10px; padding: 1.5rem 1rem 0.5rem; overflow-x: auto;
+  }
+  .figbox svg { display: block; width: 100%; min-width: 30rem; max-width: 60rem; height: auto; margin: 0 auto; }
+  figcaption { font-size: 0.84rem; color: var(--muted); line-height: 1.55; max-width: 46rem; }
+
+  .venn-name { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+  .venn-sub  { font-size: 12.5px; font-weight: 400; }
+  .venn-num  { font-size: 34px; font-weight: 700; }
+  .venn-cap  { font-size: 11.5px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; }
+  .flow-t    { font-size: 12.5px; font-weight: 500; }
+  .flow-s    { font-size: 11.5px; font-weight: 400; }
+
+  /* ---------- tables ---------- */
+  .scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.845rem; min-width: 44rem; }
+  th, td { text-align: left; vertical-align: top; padding: 0.68rem 0.85rem; border-top: 1px solid var(--rule-soft); }
+  thead th {
+    border-top: 0; border-bottom: 1px solid var(--rule); background: var(--surface-2);
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+    position: sticky; top: 0;
+  }
+  td.ev { white-space: nowrap; }
+  td.ev code { background: none; padding: 0; font-size: 0.86em; font-weight: 500; }
+  .c-iitp code { color: var(--iitp); }
+  .c-wise code { color: var(--wise); }
+
+  .pill {
+    display: inline-block; font-size: 0.63rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 0.16rem 0.42rem; border-radius: 20px;
+    background: var(--surface-2); color: var(--muted); white-space: nowrap;
+  }
+  .pill.direct { background: var(--both-soft); color: var(--both); }
+  .pill.spec   { background: var(--iitp-soft); color: var(--iitp); }
+
+  /* ---------- two-column unique lists ---------- */
+  .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .lane { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1.15rem 1.25rem; }
+  .lane > .label { display: block; margin-bottom: 0.75rem; }
+  .lane.iitp > .label { color: var(--iitp); }
+  .lane.wise > .label { color: var(--wise); }
+  .lane ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+  .lane li { font-size: 0.84rem; line-height: 1.45; }
+  .lane li code { background: none; padding: 0; font-weight: 500; display: block; }
+  .lane.iitp li code { color: var(--iitp); }
+  .lane.wise li code { color: var(--wise); }
+  .lane li span { color: var(--muted); font-family: Georgia, "Times New Roman", Times, serif; font-size: 0.9rem; }
+  .grouphead {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+    margin-top: 0.4rem; padding-top: 0.6rem; border-top: 1px dashed var(--rule);
+  }
+  .lane li:first-child .grouphead { margin-top: 0; padding-top: 0; border-top: 0; }
+
+  /* ---------- findings ---------- */
+  .finding {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-left: 3px solid var(--both); border-radius: 6px;
+    padding: 1.05rem 1.25rem; display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .finding p { margin: 0; font-size: 0.95rem; }
+  .findings { display: flex; flex-direction: column; gap: 0.85rem; }
+
+  footer {
+    border-top: 1px solid var(--rule); padding-top: 1.25rem;
+    font-size: 0.8rem; color: var(--muted); line-height: 1.6;
+  }
+
+  @media (max-width: 46rem) {
+    .vitals, .cols { grid-template-columns: 1fr; }
+    body { padding-top: 2rem; }
+  }
+
+  .docinfo {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.72rem; color: var(--muted);
+    width: 100%; border-collapse: collapse; margin-bottom: 2.25rem;
+  }
+  .docinfo td { padding: 3px 7px; border: 1px solid var(--rule); }
+  .docinfo td:nth-child(2) { text-align: center; }
+  .docinfo td:last-child { text-align: right; }
+
+  /* ---------- print ---------- */
+  @media print {
+    :root {
+      --ground: #fff; --surface: #fff; --surface-2: #f4f4f4;
+      --ink: #000; --muted: #444; --rule: #bbb; --rule-soft: #ddd;
+    }
+    body { padding: 0; font-size: 10.5pt; }
+    .wrap { max-width: none; gap: 1.6rem; }
+    section, figure, .finding, .card, .lane { break-inside: avoid; }
+    h2 { break-after: avoid; }
+    .figbox { border-color: #bbb; padding: 0.75rem 0; }
+    .figbox svg { min-width: 0; }
+    .scroll { border-color: #bbb; overflow: visible; }
+    table { min-width: 0; font-size: 8.5pt; }
+    thead th { position: static; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <table class="docinfo">
+  <tr><td>Shared Signals</td><td>IITP / WISE comparison</td><td>August 2026</td></tr>
+  <tr><td>Analysis &mdash; not a working group position</td><td>Discussion draft</td><td>[Page]</td></tr>
+</table>
+
+<header>
+    <div class="label">OpenID Shared Signals &middot; profile comparison</div>
+    <h1>IITP and WISE: where two draft profiles collide</h1>
+    <p class="lede">
+      Both drafts extend the Shared Signals Framework into non-human territory, and both arrived within
+      three weeks of each other. They are not duplicates &mdash; but they are not cleanly separable either.
+      Seven event pairs describe the same facts, and the two drafts disagree about who is allowed to assert them.
+    </p>
+  </header>
+
+  <div class="vitals">
+    <div class="card iitp">
+      <h3>IITP</h3>
+      <div class="who">
+        Internet Infrastructure Threat Profile 1.0 &middot; working group draft, 28 June 2026<br>
+        Proposed by Mike Kiser (SailPoint) and Ian Glazer (CrowdStrike)
+      </div>
+      <dl>
+        <dt>Event types</dt><dd><span class="count">13</span> &mdash; 3 specified, 10 candidates</dd>
+        <dt>Unit of risk</dt><dd>The environment</dd>
+        <dt>Subject</dt><dd>new <code>environment</code> format, plus <code>complex</code></dd>
+        <dt>Transmitter</dt><dd>Detection provider &mdash; not authoritative</dd>
+        <dt>Base URI</dt><dd class="mono" style="font-size:0.78rem">&hellip;/secevent/iitp/event-type/</dd>
+        <dt>Status</dt><dd>Charter proposed, not adopted</dd>
+      </dl>
+    </div>
+    <div class="card wise">
+      <h3>WISE</h3>
+      <div class="who">
+        Workload Identity Security Events 1.0 &middot; draft 02, 19 July 2026<br>
+        Lombardo (AWS), Sneeggen (Signicat), O&rsquo;Dell (CVS Health), Kasselman (Defakto Security)
+      </div>
+      <dl>
+        <dt>Event types</dt><dd><span class="count">20</span> &mdash; all specified</dd>
+        <dt>Unit of risk</dt><dd>The workload identity</dd>
+        <dt>Subject</dt><dd><code>uri</code> per RFC 9493 &mdash; <code>wimse://</code>, <code>spiffe://</code></dd>
+        <dt>Transmitter</dt><dd>Trust domain authority &mdash; authoritative</dd>
+        <dt>Base URI</dt><dd class="mono" style="font-size:0.78rem">&hellip;/secevent/wise/event-type/</dd>
+        <dt>Status</dt><dd>Published draft, three issues open</dd>
+      </dl>
+    </div>
+  </div>
+
+  <section>
+    <h2>The overlap, by event count</h2>
+    <figure>
+      <div class="figbox">
+        <svg viewBox="0 0 900 620" role="img"
+             aria-label="Venn diagram. IITP has seven events of its own, WISE has thirteen of its own, and seven event pairs sit in the overlap describing the same underlying facts.">
+          <text x="265" y="46" text-anchor="middle" class="venn-name" fill="var(--iitp)">IITP</text>
+          <text x="265" y="66" text-anchor="middle" class="venn-sub" fill="var(--muted)">the environment</text>
+          <text x="635" y="46" text-anchor="middle" class="venn-name" fill="var(--wise)">WISE</text>
+          <text x="635" y="66" text-anchor="middle" class="venn-sub" fill="var(--muted)">the workload identity</text>
+
+          <circle cx="340" cy="270" r="190" fill="var(--iitp-fill)" stroke="var(--iitp)" stroke-width="1.5"/>
+          <circle cx="560" cy="270" r="190" fill="var(--wise-fill)" stroke="var(--wise)" stroke-width="1.5"/>
+          <path d="M 450 115.08 A 190 190 0 0 1 450 424.92 A 190 190 0 0 1 450 115.08 Z"
+                fill="var(--both-fill)" stroke="var(--both)" stroke-width="1.5"/>
+
+          <text x="243" y="262" text-anchor="middle" class="venn-num" fill="var(--iitp)">7</text>
+          <text x="243" y="286" text-anchor="middle" class="venn-cap" fill="var(--iitp)">only here</text>
+
+          <text x="657" y="262" text-anchor="middle" class="venn-num" fill="var(--wise)">13</text>
+          <text x="657" y="286" text-anchor="middle" class="venn-cap" fill="var(--wise)">only here</text>
+
+          <text x="450" y="262" text-anchor="middle" class="venn-num" fill="var(--both)">7</text>
+          <text x="450" y="285" text-anchor="middle" class="venn-cap" fill="var(--both)">pairs</text>
+
+          <line x1="450" y1="440" x2="450" y2="486" stroke="var(--both)" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="450" y="507" text-anchor="middle" class="venn-sub" fill="var(--both)">
+            6 IITP events map onto 7 WISE events
+          </text>
+          <text x="450" y="527" text-anchor="middle" class="venn-sub" fill="var(--muted)">
+            <tspan class="mono">workload-compromise</tspan> answers two of them
+          </text>
+
+          <text x="243" y="560" text-anchor="middle" class="venn-sub" fill="var(--muted)">cloud control plane,</text>
+          <text x="243" y="578" text-anchor="middle" class="venn-sub" fill="var(--muted)">tenants, campaigns</text>
+          <text x="657" y="560" text-anchor="middle" class="venn-sub" fill="var(--muted)">credential and workload</text>
+          <text x="657" y="578" text-anchor="middle" class="venn-sub" fill="var(--muted)">lifecycle, policy, posture</text>
+        </svg>
+      </div>
+      <figcaption>
+        Of IITP&rsquo;s 13 candidate events and WISE&rsquo;s 20 specified events, seven pairs describe the same
+        underlying fact. The contested ground is narrow but it is the most security-critical part of both
+        drafts: workload compromise, trust material, and credential exposure.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>The seven collisions</h2>
+    <p class="prose">
+      Three of these are near-homographs &mdash; the same event under the same name, differing only by tense.
+      The other four describe one fact from two directions.
+    </p>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:20%">IITP</th>
+            <th style="width:22%">WISE</th>
+            <th style="width:10%">Kind</th>
+            <th style="width:48%">How they differ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ev c-iitp"><code>workload-compromise</code></td>
+            <td class="ev c-wise"><code>workload-compromised</code></td>
+            <td><span class="pill direct">Same name</span></td>
+            <td>IITP&rsquo;s is far richer &mdash; <code>compromise_type</code>, <code>trust_status</code>, a workload
+                object carrying <code>spiffe_id</code>, plus <code>affected_component</code> and <code>indicators</code>.
+                WISE&rsquo;s carries only <code>detection_method</code>. Note IITP reaches for a SPIFFE ID here,
+                which is WISE&rsquo;s native identifier.</td>
+          </tr>
+          <tr>
+            <td class="ev c-iitp"><code>anomalous-workload-behavior</code></td>
+            <td class="ev c-wise"><code>anomalous-behavior-detected</code></td>
+            <td><span class="pill direct">Same name</span></td>
+            <td>Both are deliberately the low-confidence tier below the compromise event, and both say so in
+                almost identical words. Functionally interchangeable.</td>
+          </tr>
+          <tr>
+            <td class="ev c-iitp"><code>trust-anchor-change</code></td>
+            <td class="ev c-wise"><code>trust-anchor-changed</code></td>
+            <td><span class="pill direct">Same name</span></td>
+            <td>WISE is substantially deeper: <code>x509_ca</code> vs <code>jwks</code>, five change types,
+                <code>effective_at</code>, <code>old_material_expiry</code> for grace periods, and URIs to fetch
+                the new bundle. IITP has four fields and no rotation semantics.</td>
+          </tr>
+          <tr>
+            <td class="ev c-iitp"><code>secret-exposure</code></td>
+            <td class="ev c-wise"><code>credential-compromise</code></td>
+            <td><span class="pill">Same fact</span></td>
+            <td>Both cover non-human credential exposure. IITP frames it as a leak discovered in the
+                environment; WISE as a statement by the credential&rsquo;s issuer, sitting in a lifecycle
+                alongside <code>credential-revoked</code>.</td>
+          </tr>
+          <tr>
+            <td class="ev c-iitp"><code>federation-trust-compromise</code></td>
+            <td class="ev c-wise"><code>trust-domain-federation-revoked</code></td>
+            <td><span class="pill">Opposed framing</span></td>
+            <td>The clearest illustration of the split. IITP reports a <em>detection</em> &mdash; Golden SAML,
+                a stolen signing key. WISE reports a <em>decision</em>: federation is revoked and credentials
+                &ldquo;MUST be rejected.&rdquo; Same event, one observed, one declared.</td>
+          </tr>
+          <tr>
+            <td class="ev c-iitp"><code>critical-vulnerability-exposed</code></td>
+            <td class="ev c-wise"><code>workload-vulnerability-status-changed</code></td>
+            <td><span class="pill">Same fact</span></td>
+            <td>WISE follows the VEX model, so it is bidirectional &mdash; it can also say <code>not_affected</code>
+                or <code>fixed</code> and relax a prior warning. IITP only raises the alarm; nothing lowers it.</td>
+          </tr>
+          <tr>
+            <td class="ev c-iitp"><code>workload-compromise</code> <span class="pill spec">supply-chain</span></td>
+            <td class="ev c-wise"><code>workload-provenance-changed</code></td>
+            <td><span class="pill">Partial</span></td>
+            <td>IITP folds supply-chain poisoning into one compromise event with an
+                <code>affected_component</code>. WISE separates provenance as its own signal with SBOM and
+                attestation URIs, so it can report a provenance change that is not yet a compromise.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What only one of them has</h2>
+    <div class="cols">
+      <div class="lane iitp">
+        <span class="label">IITP alone &mdash; 7 events</span>
+        <ul>
+          <li><div class="grouphead">Cloud &amp; environment posture</div></li>
+          <li><code>configuration-drift</code><span>Privilege explosion on a cloud role. The motivating use case, and nothing in WISE touches the control plane.</span></li>
+          <li><code>security-control-degraded</code><span>EDR offline, WAF in monitor-only, logging dropped.</span></li>
+          <li><div class="grouphead">Active threat &mdash; app &amp; tenant</div></li>
+          <li><code>asset-under-attack</code><span>A tenant under an active campaign, with threat-actor attribution and IoCs.</span></li>
+          <li><code>data-exfiltration</code><span>Bulk or anomalous egress at environment level.</span></li>
+          <li><code>lateral-movement</code><span>Adversary moving between workloads or accounts.</span></li>
+          <li><div class="grouphead">Response coordination</div></li>
+          <li><code>containment-status-change</code><span>The &ldquo;action taken&rdquo; signal, so parties don&rsquo;t double-act.</span></li>
+          <li><code>environment-lifecycle-change</code><span>Environment created, cloned, suspended, decommissioned.</span></li>
+        </ul>
+      </div>
+      <div class="lane wise">
+        <span class="label">WISE alone &mdash; 13 events</span>
+        <ul>
+          <li><div class="grouphead">Credential lifecycle</div></li>
+          <li><code>credential-issued</code> <code>credential-rotated</code> <code>credential-revoked</code> <code>credential-renewal-failure</code><span>The full issuance lifecycle. IITP has no concept of a credential being issued or rotated at all.</span></li>
+          <li><div class="grouphead">Workload lifecycle</div></li>
+          <li><code>workload-disabled</code> <code>workload-enabled</code> <code>workload-purged</code><span>Administrative state of a workload, independent of any threat.</span></li>
+          <li><div class="grouphead">Policy &amp; posture evaluation</div></li>
+          <li><code>issuance-policy-changed</code> <code>validation-policy-changed</code> <code>posture-evaluation-policy-changed</code><span>Changes to the rules themselves &mdash; a category IITP does not model.</span></li>
+          <li><code>posture-evaluation-failed</code> <code>posture-evaluation-succeeded</code><span>Outcomes of an evaluation, including the success case.</span></li>
+          <li><div class="grouphead">Runtime posture</div></li>
+          <li><code>workload-baseline-changed</code><span>The expected-behaviour baseline moved.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The difference that isn&rsquo;t about events</h2>
+    <p class="prose">
+      Counting events understates the split. The two drafts disagree about what a Shared Signals transmitter
+      <em>is</em> &mdash; and that disagreement decides what a receiver is allowed to do on arrival.
+    </p>
+    <figure>
+      <div class="figbox">
+        <svg viewBox="0 0 900 300" role="img"
+             aria-label="Two flows compared. In WISE a trust domain authority sends an authoritative statement and the relying party must reject the credential. In IITP a detection provider sends an advisory detection and the receiver decides its own response.">
+          <defs>
+            <marker id="ar-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--wise)"/>
+            </marker>
+            <marker id="ar-i" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iitp)"/>
+            </marker>
+          </defs>
+
+          <text x="20" y="30" class="venn-cap" fill="var(--wise)">WISE</text>
+          <rect x="20" y="46" width="228" height="62" rx="6" fill="var(--wise-soft)" stroke="var(--wise)" stroke-width="1.3"/>
+          <text x="134" y="72" text-anchor="middle" class="flow-t" fill="var(--ink)">Trust domain authority</text>
+          <text x="134" y="92" text-anchor="middle" class="flow-s" fill="var(--muted)">issued the credential</text>
+
+          <line x1="256" y1="77" x2="524" y2="77" stroke="var(--wise)" stroke-width="1.6" marker-end="url(#ar-w)"/>
+          <text x="390" y="66" text-anchor="middle" class="flow-s" fill="var(--wise)">authoritative statement</text>
+          <text x="390" y="97" text-anchor="middle" class="flow-s" fill="var(--muted)">&ldquo;federation revoked&rdquo;</text>
+
+          <rect x="532" y="46" width="228" height="62" rx="6" fill="var(--wise-soft)" stroke="var(--wise)" stroke-width="1.3"/>
+          <text x="646" y="72" text-anchor="middle" class="flow-t" fill="var(--ink)">Relying party</text>
+          <text x="646" y="92" text-anchor="middle" class="flow-s" fill="var(--wise)">MUST reject credentials</text>
+
+          <line x1="20" y1="150" x2="880" y2="150" stroke="var(--rule)" stroke-width="1"/>
+
+          <text x="20" y="186" class="venn-cap" fill="var(--iitp)">IITP</text>
+          <rect x="20" y="202" width="228" height="62" rx="6" fill="var(--iitp-soft)" stroke="var(--iitp)" stroke-width="1.3"/>
+          <text x="134" y="228" text-anchor="middle" class="flow-t" fill="var(--ink)">Detection provider</text>
+          <text x="134" y="248" text-anchor="middle" class="flow-s" fill="var(--muted)">CIEM, SIEM, EDR</text>
+
+          <line x1="256" y1="233" x2="524" y2="233" stroke="var(--iitp)" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#ar-i)"/>
+          <text x="390" y="222" text-anchor="middle" class="flow-s" fill="var(--iitp)">advisory detection</text>
+          <text x="390" y="253" text-anchor="middle" class="flow-s" fill="var(--muted)">+ recommended_actions</text>
+
+          <rect x="532" y="202" width="228" height="62" rx="6" fill="var(--iitp-soft)" stroke="var(--iitp)" stroke-width="1.3"/>
+          <text x="646" y="228" text-anchor="middle" class="flow-t" fill="var(--ink)">Receiver</text>
+          <text x="646" y="248" text-anchor="middle" class="flow-s" fill="var(--iitp)">MUST NOT treat as command</text>
+
+          <text x="790" y="77" class="flow-s" fill="var(--muted)">solid: binding</text>
+          <text x="790" y="233" class="flow-s" fill="var(--muted)">dashed: advisory</text>
+        </svg>
+      </div>
+      <figcaption>
+        The same fact &mdash; a federation is no longer trustworthy &mdash; carries opposite normative force in
+        the two drafts. WISE&rsquo;s transmitter is the authority that issued the credential, so it can oblige the
+        receiver. IITP&rsquo;s transmitter merely observed something, so it explicitly cannot.
+      </figcaption>
+    </figure>
+
+    <div class="findings">
+      <div class="finding">
+        <h3>Authority is the real fault line</h3>
+        <p>
+          WISE events are assertions by the party with standing to make them: a trust domain authority speaking
+          about credentials it issued. IITP events are detections by a party with no standing at all &mdash; the
+          draft says plainly that a receiver &ldquo;MUST NOT treat these as commands,&rdquo; and that the receiver
+          is responsible for avoiding self-inflicted denial of service. Two events with the same name and the
+          same payload mean different things depending on which profile emitted them.
+        </p>
+      </div>
+      <div class="finding">
+        <h3>Only IITP carries confidence</h3>
+        <p>
+          Because IITP transmitters are fallible detectors, every event may carry <code>severity</code>,
+          <code>confidence</code>, and <code>recommended_actions</code>, and receivers are told to weight
+          automated enforcement by them. WISE has <code>severity</code> on exactly two events and no notion of
+          confidence &mdash; consistent with a profile where the transmitter is authoritative and simply correct.
+        </p>
+      </div>
+      <div class="finding">
+        <h3>They disagree on what a workload is called</h3>
+        <p>
+          WISE identifies subjects with <code>wimse://</code> or <code>spiffe://</code> URIs rooted in a trust
+          domain. IITP invents an <code>environment</code> subject format and reaches for <code>complex</code>
+          when it needs a workload &mdash; then puts <code>spiffe_id</code> inside the event payload rather than
+          the subject. For the same compromised container, the two profiles disagree about the subject, which is
+          the one field a receiver routes on.
+        </p>
+      </div>
+      <div class="finding">
+        <h3>Both leave the clearing story half-built</h3>
+        <p>
+          IITP has a consistent follow-up pattern &mdash; <code>reverted</code>, <code>resolved</code>,
+          <code>restored</code> &mdash; but only for its three specified events. WISE only reverses on
+          vulnerability status, via VEX. Neither can currently retract a compromise assertion, which matters
+          most for exactly the events that overlap.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What this suggests for the way forward</h2>
+    <p class="prose">
+      The two drafts are not competing for the same territory overall. Across 27 distinct facts between them,
+      20 are uncontested &mdash; roughly three quarters. IITP owns the cloud control plane and tenant-level
+      campaigns; WISE owns the credential and workload lifecycle. Neither could absorb the other without
+      becoming something it isn&rsquo;t.
+    </p>
+    <p class="prose">
+      The seven collisions are concentrated and tractable. Three are the same event under a different tense,
+      and in each case one draft is clearly further along: WISE on trust anchors and vulnerability status,
+      IITP on workload compromise. The obvious move is to assign each contested event to whichever profile
+      already models it better, and have the other reference it rather than restate it &mdash; the pattern IITP
+      already uses toward CAEP and RISC, where it tells transmitters to prefer the existing event.
+    </p>
+    <p class="prose">
+      The authority split is the part that needs a decision rather than an edit. It is a genuine architectural
+      disagreement about what a Shared Signals transmitter is entitled to assert, and it will surface again in
+      any future profile written by detection vendors rather than issuing authorities.
+    </p>
+  </section>
+
+  <footer>
+    Compiled from the IITP proposed charter, IITP event catalog, and IITP 1.0 working group draft
+    (all 28 June 2026), and OpenID WISE Profile Specification 1.0 draft 02 (19 July 2026). Event counts are
+    from the drafts as read; overlap pairings and the authority analysis are an assessment, not a working
+    group position. Neither document is an OpenID Foundation publication.
+  </footer>
+
+</div>
+
+</body>
+</html>
