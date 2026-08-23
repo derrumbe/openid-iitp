@@ -35,6 +35,24 @@ All four documents are published at <https://derrumbe.github.io/openid-iitp/>:
 The specification is written in [kramdown-rfc][kr] markdown and rendered with
 [xml2rfc][xr], the same toolchain used by the Shared Signals specifications.
 
+## Related work
+
+The [WISE profile][wise-repo] (Workload Identity Security Events) is a parallel
+draft profile of the Shared Signals Framework, covering the workload identity
+lifecycle — credential issuance and rotation, trust anchors, policy, and posture
+— for workloads named by [WIMSE][wimse] or [SPIFFE][spiffe] identifiers.
+
+IITP and WISE are complementary but do overlap: seven event pairs describe the
+same underlying facts, and the two drafts take different positions on whether a
+Transmitter is an authority or a detector. The
+[IITP / WISE comparison](https://derrumbe.github.io/openid-iitp/openid-iitp-wise-comparison.html)
+sets out where they collide and where each is unique.
+
+| | Repository | Published draft |
+| --- | --- | --- |
+| WISE | <https://github.com/identitymonk/openid-wise> | <https://identitymonk.github.io/openid-wise/> |
+| IITP | <https://github.com/derrumbe/openid-iitp> | <https://derrumbe.github.io/openid-iitp/> |
+
 ## Event types
 
 Three event types are specified in draft 01:
@@ -74,5 +92,8 @@ copyright policies.
 [ssf]: https://openid.net/specs/openid-sharedsignals-framework-1_0.html
 [caep]: https://openid.net/specs/openid-caep-1_0.html
 [risc]: https://openid.net/specs/openid-risc-1_0.html
+[wise-repo]: https://github.com/identitymonk/openid-wise
+[wimse]: https://datatracker.ietf.org/wg/wimse/about/
+[spiffe]: https://spiffe.io/
 [kr]: https://github.com/cabo/kramdown-rfc
 [xr]: https://github.com/ietf-tools/xml2rfc
