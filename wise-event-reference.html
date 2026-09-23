@@ -589,7 +589,14 @@ function applyFilter(f){
 document.querySelectorAll(".filters button").forEach(b=>b.addEventListener("click",()=>applyFilter(b.dataset.f)));
 let saved="all"; try{ saved = localStorage.getItem("wise-filter") || "all"; }catch(_){}
 applyFilter(saved);
-if(location.hash){ const el=document.getElementById(location.hash.slice(1)); if(el){ applyFilter("all"); el.scrollIntoView(); } }
+if(location.hash){
+  const el=document.getElementById(location.hash.slice(1));
+  if(el){
+    if(el.closest("[hidden]")) applyFilter("all");
+    const go=()=>el.scrollIntoView();
+    go(); (document.fonts ? document.fonts.ready : Promise.resolve()).then(()=>requestAnimationFrame(go));
+  }
+}
 </script>
 </body>
 </html>

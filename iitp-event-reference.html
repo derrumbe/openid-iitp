@@ -534,7 +534,14 @@ let saved="all"; try{ saved = localStorage.getItem("iitp-filter") || "all"; }cat
 applyFilter(saved);
 
 /* open an example when deep-linked to an event */
-if(location.hash){ const el=document.getElementById(location.hash.slice(1)); if(el) el.scrollIntoView(); }
+if(location.hash){
+  const el=document.getElementById(location.hash.slice(1));
+  if(el){
+    if(el.closest("[hidden]")) applyFilter("all");
+    const go=()=>el.scrollIntoView();
+    go(); (document.fonts ? document.fonts.ready : Promise.resolve()).then(()=>requestAnimationFrame(go));
+  }
+}
 </script>
 </body>
 </html>

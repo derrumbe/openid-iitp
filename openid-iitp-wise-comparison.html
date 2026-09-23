@@ -132,6 +132,9 @@
   }
 
   a { color: var(--wise); }
+  a.evlink { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }
+  a.evlink:hover, a.evlink:focus-visible { text-decoration-style: solid; }
+  .lane li a.evlink { display: block; width: fit-content; }
 
   /* ---------- header vitals ---------- */
   .vitals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
@@ -374,8 +377,8 @@
         </thead>
         <tbody>
           <tr>
-            <td class="ev c-iitp"><code>workload-compromise</code></td>
-            <td class="ev c-wise"><code>workload-compromised</code></td>
+            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#workload-compromise"><code>workload-compromise</code></a></td>
+            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#workload-compromised"><code>workload-compromised</code></a></td>
             <td><span class="pill direct">Same name</span></td>
             <td>IITP&rsquo;s is far richer &mdash; <code>compromise_type</code>, <code>trust_status</code>, a workload
                 object carrying <code>spiffe_id</code>, plus <code>affected_component</code> and <code>indicators</code>.
@@ -383,46 +386,46 @@
                 which is WISE&rsquo;s native identifier.</td>
           </tr>
           <tr>
-            <td class="ev c-iitp"><code>anomalous-workload-behavior</code></td>
-            <td class="ev c-wise"><code>anomalous-behavior-detected</code></td>
+            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#anomalous-workload-behavior"><code>anomalous-workload-behavior</code></a></td>
+            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#anomalous-behavior-detected"><code>anomalous-behavior-detected</code></a></td>
             <td><span class="pill direct">Same name</span></td>
             <td>Both are deliberately the low-confidence tier below the compromise event, and both say so in
                 almost identical words. Functionally interchangeable.</td>
           </tr>
           <tr>
-            <td class="ev c-iitp"><code>trust-anchor-change</code></td>
-            <td class="ev c-wise"><code>trust-anchor-changed</code></td>
+            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#trust-anchor-change"><code>trust-anchor-change</code></a></td>
+            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#trust-anchor-changed"><code>trust-anchor-changed</code></a></td>
             <td><span class="pill direct">Same name</span></td>
             <td>WISE is substantially deeper: <code>x509_ca</code> vs <code>jwks</code>, five change types,
                 <code>effective_at</code>, <code>old_material_expiry</code> for grace periods, and URIs to fetch
                 the new bundle. IITP has four fields and no rotation semantics.</td>
           </tr>
           <tr>
-            <td class="ev c-iitp"><code>secret-exposure</code></td>
-            <td class="ev c-wise"><code>credential-compromise</code></td>
+            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#secret-exposure"><code>secret-exposure</code></a></td>
+            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#credential-compromise"><code>credential-compromise</code></a></td>
             <td><span class="pill">Same fact</span></td>
             <td>Both cover non-human credential exposure. IITP frames it as a leak discovered in the
                 environment; WISE as a statement by the credential&rsquo;s issuer, sitting in a lifecycle
                 alongside <code>credential-revoked</code>.</td>
           </tr>
           <tr>
-            <td class="ev c-iitp"><code>federation-trust-compromise</code></td>
-            <td class="ev c-wise"><code>trust-domain-federation-revoked</code></td>
+            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#federation-trust-compromise"><code>federation-trust-compromise</code></a></td>
+            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#trust-domain-federation-revoked"><code>trust-domain-federation-revoked</code></a></td>
             <td><span class="pill">Opposed framing</span></td>
             <td>The clearest illustration of the split. IITP reports a <em>detection</em> &mdash; Golden SAML,
                 a stolen signing key. WISE reports a <em>decision</em>: federation is revoked and credentials
                 &ldquo;MUST be rejected.&rdquo; Same event, one observed, one declared.</td>
           </tr>
           <tr>
-            <td class="ev c-iitp"><code>critical-vulnerability-exposed</code></td>
-            <td class="ev c-wise"><code>workload-vulnerability-status-changed</code></td>
+            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#critical-vulnerability-exposed"><code>critical-vulnerability-exposed</code></a></td>
+            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#workload-vulnerability-status-changed"><code>workload-vulnerability-status-changed</code></a></td>
             <td><span class="pill">Same fact</span></td>
             <td>WISE follows the VEX model, so it is bidirectional &mdash; it can also say <code>not_affected</code>
                 or <code>fixed</code> and relax a prior warning. IITP only raises the alarm; nothing lowers it.</td>
           </tr>
           <tr>
-            <td class="ev c-iitp"><code>workload-compromise</code> <span class="pill spec">supply-chain</span></td>
-            <td class="ev c-wise"><code>workload-provenance-changed</code></td>
+            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#workload-compromise"><code>workload-compromise</code></a> <span class="pill spec">supply-chain</span></td>
+            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#workload-provenance-changed"><code>workload-provenance-changed</code></a></td>
             <td><span class="pill">Partial</span></td>
             <td>IITP folds supply-chain poisoning into one compromise event with an
                 <code>affected_component</code>. WISE separates provenance as its own signal with SBOM and
@@ -440,29 +443,29 @@
         <span class="label">IITP alone &mdash; 7 events</span>
         <ul>
           <li><div class="grouphead">Cloud &amp; environment posture</div></li>
-          <li><code>configuration-drift</code><span>Privilege explosion on a cloud role. The motivating use case, and nothing in WISE touches the control plane.</span></li>
-          <li><code>security-control-degraded</code><span>EDR offline, WAF in monitor-only, logging dropped.</span></li>
+          <li><a class="evlink" href="iitp-event-reference.html#configuration-drift"><code>configuration-drift</code></a><span>Privilege explosion on a cloud role. The motivating use case, and nothing in WISE touches the control plane.</span></li>
+          <li><a class="evlink" href="iitp-event-reference.html#security-control-degraded"><code>security-control-degraded</code></a><span>EDR offline, WAF in monitor-only, logging dropped.</span></li>
           <li><div class="grouphead">Active threat &mdash; app &amp; tenant</div></li>
-          <li><code>asset-under-attack</code><span>A tenant under an active campaign, with threat-actor attribution and IoCs.</span></li>
-          <li><code>data-exfiltration</code><span>Bulk or anomalous egress at environment level.</span></li>
-          <li><code>lateral-movement</code><span>Adversary moving between workloads or accounts.</span></li>
+          <li><a class="evlink" href="iitp-event-reference.html#asset-under-attack"><code>asset-under-attack</code></a><span>A tenant under an active campaign, with threat-actor attribution and IoCs.</span></li>
+          <li><a class="evlink" href="iitp-event-reference.html#data-exfiltration"><code>data-exfiltration</code></a><span>Bulk or anomalous egress at environment level.</span></li>
+          <li><a class="evlink" href="iitp-event-reference.html#lateral-movement"><code>lateral-movement</code></a><span>Adversary moving between workloads or accounts.</span></li>
           <li><div class="grouphead">Response coordination</div></li>
-          <li><code>containment-status-change</code><span>The &ldquo;action taken&rdquo; signal, so parties don&rsquo;t double-act.</span></li>
-          <li><code>environment-lifecycle-change</code><span>Environment created, cloned, suspended, decommissioned.</span></li>
+          <li><a class="evlink" href="iitp-event-reference.html#containment-status-change"><code>containment-status-change</code></a><span>The &ldquo;action taken&rdquo; signal, so parties don&rsquo;t double-act.</span></li>
+          <li><a class="evlink" href="iitp-event-reference.html#environment-lifecycle-change"><code>environment-lifecycle-change</code></a><span>Environment created, cloned, suspended, decommissioned.</span></li>
         </ul>
       </div>
       <div class="lane wise">
         <span class="label">WISE alone &mdash; 13 events</span>
         <ul>
           <li><div class="grouphead">Credential lifecycle</div></li>
-          <li><code>credential-issued</code> <code>credential-rotated</code> <code>credential-revoked</code> <code>credential-renewal-failure</code><span>The full issuance lifecycle. IITP has no concept of a credential being issued or rotated at all.</span></li>
+          <li><a class="evlink" href="wise-event-reference.html#credential-issued"><code>credential-issued</code></a> <a class="evlink" href="wise-event-reference.html#credential-rotated"><code>credential-rotated</code></a> <a class="evlink" href="wise-event-reference.html#credential-revoked"><code>credential-revoked</code></a> <a class="evlink" href="wise-event-reference.html#credential-renewal-failure"><code>credential-renewal-failure</code></a><span>The full issuance lifecycle. IITP has no concept of a credential being issued or rotated at all.</span></li>
           <li><div class="grouphead">Workload lifecycle</div></li>
-          <li><code>workload-disabled</code> <code>workload-enabled</code> <code>workload-purged</code><span>Administrative state of a workload, independent of any threat.</span></li>
+          <li><a class="evlink" href="wise-event-reference.html#workload-disabled"><code>workload-disabled</code></a> <a class="evlink" href="wise-event-reference.html#workload-enabled"><code>workload-enabled</code></a> <a class="evlink" href="wise-event-reference.html#workload-purged"><code>workload-purged</code></a><span>Administrative state of a workload, independent of any threat.</span></li>
           <li><div class="grouphead">Policy &amp; posture evaluation</div></li>
-          <li><code>issuance-policy-changed</code> <code>validation-policy-changed</code> <code>posture-evaluation-policy-changed</code><span>Changes to the rules themselves &mdash; a category IITP does not model.</span></li>
-          <li><code>posture-evaluation-failed</code> <code>posture-evaluation-succeeded</code><span>Outcomes of an evaluation, including the success case.</span></li>
+          <li><a class="evlink" href="wise-event-reference.html#issuance-policy-changed"><code>issuance-policy-changed</code></a> <a class="evlink" href="wise-event-reference.html#validation-policy-changed"><code>validation-policy-changed</code></a> <a class="evlink" href="wise-event-reference.html#posture-evaluation-policy-changed"><code>posture-evaluation-policy-changed</code></a><span>Changes to the rules themselves &mdash; a category IITP does not model.</span></li>
+          <li><a class="evlink" href="wise-event-reference.html#posture-evaluation-failed"><code>posture-evaluation-failed</code></a> <a class="evlink" href="wise-event-reference.html#posture-evaluation-succeeded"><code>posture-evaluation-succeeded</code></a><span>Outcomes of an evaluation, including the success case.</span></li>
           <li><div class="grouphead">Runtime posture</div></li>
-          <li><code>workload-baseline-changed</code><span>The expected-behaviour baseline moved.</span></li>
+          <li><a class="evlink" href="wise-event-reference.html#workload-baseline-changed"><code>workload-baseline-changed</code></a><span>The expected-behaviour baseline moved.</span></li>
         </ul>
       </div>
     </div>
