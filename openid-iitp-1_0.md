@@ -7,7 +7,7 @@ wg: OpenID Shared Signals
 
 docname: openid-iitp-1_0
 
-title: "OpenID Internet Infrastructure Threat Profile 1.0 - draft 01"
+title: "OpenID Internet Infrastructure Threat Profile 1.0 - draft 02"
 abbrev: IITP-Spec
 lang: en
 kw:
@@ -371,11 +371,13 @@ The following example is non-normative. It shows the detection of a profiled adv
 }
 ~~~
 
-## workload-compromise
+## workload-compromised
 
-Event Type URI: `https://schemas.openid.net/secevent/iitp/event-type/workload-compromise`
+Event Type URI: `https://schemas.openid.net/secevent/iitp/event-type/workload-compromised`
 
-The `workload-compromise` event signals that a deployed workload -- an application, service, container, or function identified by the subject -- is believed to be compromised and should no longer be trusted. The motivating case is a supply-chain attack against a homegrown application deployed in a Kubernetes cluster: a poisoned dependency or build artifact results in an actively compromised running app. On receiving this event, relying systems can withdraw trust from the workload -- for example by blocking OAuth or service-to-service traffic to and from its service account, revoking its workload identity, or preventing agents from communicating with it -- in order to contain the compromise.
+The `workload-compromised` event signals that a deployed workload -- an application, service, container, or function identified by the subject -- is believed to be compromised and should no longer be trusted. The motivating case is a supply-chain attack against a homegrown application deployed in a Kubernetes cluster: a poisoned dependency or build artifact results in an actively compromised running app. On receiving this event, relying systems can withdraw trust from the workload -- for example by blocking OAuth or service-to-service traffic to and from its service account, revoking its workload identity, or preventing agents from communicating with it -- in order to contain the compromise.
+
+This event deliberately shares its name with the equivalent event in the OpenID WISE profile. Under the two profiles' layering, the same event is carried under the same name from different Transmitters: an IITP Transmitter is a detection provider reporting an environment-level observation (typically supply-chain-driven), while a WISE Transmitter is the trust domain authority making an authoritative statement about a credential it issued. Receivers treat the two as the same event.
 
 Attributes:
 
@@ -414,7 +416,7 @@ The following example is non-normative. It shows a supply-chain compromise of a 
     }
   },
   "events": {
-    "https://schemas.openid.net/secevent/iitp/event-type/workload-compromise": {
+    "https://schemas.openid.net/secevent/iitp/event-type/workload-compromised": {
       "compromise_type": "supply-chain",
       "trust_status": "untrusted",
       "workload": {
@@ -519,7 +521,7 @@ An application or environment is actively under attack -- for example a password
 ## Supply Chain Compromise in a Homegrown Application
 {:numbered="false"}
 
-In an enterprise deployment, a supply-chain attack is detected in a homegrown application running in a Kubernetes cluster, resulting in a poisoned and actively compromised app. A `workload-compromise` event lets other systems know not to trust the compromised app, leading to protective measures such as blocking all OAuth and service-to-service traffic between service accounts, or preventing agents from communicating with the app.
+In an enterprise deployment, a supply-chain attack is detected in a homegrown application running in a Kubernetes cluster, resulting in a poisoned and actively compromised app. A `workload-compromised` event lets other systems know not to trust the compromised app, leading to protective measures such as blocking all OAuth and service-to-service traffic between service accounts, or preventing agents from communicating with the app.
 
 # Acknowledgments
 {:numbered="false"}
@@ -533,6 +535,12 @@ This document is an independent working draft and is not a publication of the Op
 
 # Document History
 {:numbered="false"}
+
+-02
+
+- Renamed the `workload-compromise` event type to `workload-compromised`, deliberately sharing a name with the equivalent event in the OpenID WISE profile. Under the layering agreed with the WISE proposers on 2026-09-23, the same event is carried under the same name from different Transmitters: an IITP Transmitter is a detection provider reporting an environment-level observation (typically supply-chain-driven); a WISE Transmitter is the trust domain authority making an authoritative statement.
+- Removed the `federation-trust-compromise`, `secret-exposure`, and `trust-anchor-change` candidate event types from the accompanying IITP Event Catalog in favour of the equivalent WISE (or IPSIE) events; those events were not defined in this specification.
+- Updated the `workload-compromised` Event Type URI and the non-normative JSON example accordingly.
 
 -01
 

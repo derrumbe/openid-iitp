@@ -88,6 +88,39 @@ and AuthZEN working groups, and with the IETF (SET, Subject Identifiers for Secu
 Tokens). Where event semantics overlap with threat-sharing standards such as STIX,
 alignment of vocabulary will be considered.
 
+### Removing overlap with WISE
+
+Early drafts of IITP defined event types that overlap with the [Workload Identity in
+Secure Environments (WISE) profile][wise] — notably around federation trust, non-human
+credentials, trust anchors, and runtime workload compromise. During a 2026-09-23 working
+session between the IITP and WISE proposers, the two profiles agreed to adopt a clean
+layering rather than continue to define overlapping events.
+
+The layering is:
+
+- **WISE — the confederacy of running workloads and the interplay between them.** Events
+  about what is happening *inside* the boxes: federation, non-human credentials, trust
+  anchors.
+- **IITP — the environment those workloads run in.** Events about the things that operate
+  the boxes: cloud posture, configuration drift, and supply-chain integrity.
+
+Under that layering, the following changes are applied to the IITP event catalog:
+
+| Item (earlier IITP draft) | Disposition | Rationale |
+| --- | --- | --- |
+| `secret-exposure` | Removed from IITP; covered by WISE `credential-compromise`. | Non-human credentials live in WISE. |
+| `trust-anchor-change` | Removed from IITP; covered by WISE (or IPSIE where the anchor governs an OIDC federation). | Federation-layer concern, not environment posture. |
+| `federation-trust-compromise` | Removed from IITP; covered by WISE (or IPSIE). | Federation-layer concern. |
+| `workload-compromise` | Renamed to `workload-compromised` in IITP, sharing a name with the equivalent WISE event. | The two profiles carry the same event under the same name from different Transmitters — IITP as a detection at the environment level (typically supply-chain-driven), WISE as an authoritative statement by the trust domain issuer. |
+
+Where an IITP receiver needs the corresponding per-workload signal, it is expected to
+consume the WISE event. The two profiles are intended to be used together, with IITP
+describing the environment-level cause and WISE / CAEP / RISC carrying out per-workload or
+per-subject enforcement. Coordination between the IITP and WISE editors is expected to
+continue as both profiles mature.
+
+[wise]: https://identitymonk.github.io/openid-wise/
+
 ## 4) Proposed specification
 
 The group proposes the following Specification deliverable:
@@ -100,7 +133,7 @@ to the Shared Signals Framework, the `environment` subject format, shared event 
 follow-up pattern), and the associated privacy and security considerations. The base URI
 for the event types would be `https://schemas.openid.net/secevent/iitp/event-type/`.
 
-The profile is organized into five thematic groups of event types. **The event types
+The profile is organized into four thematic groups of event types. **The event types
 listed below are candidate events only.** They are illustrative of the kinds of
 environment- and application-level conditions the profile may cover, and are explicitly
 offered as a starting point for discussion. The Working Group is expected to add, remove,
@@ -115,13 +148,14 @@ rename, merge, split, and otherwise modify these candidates — and the grouping
 | Active Threat — App & Tenant | `asset-under-attack` | An app or tenant is under an active campaign (password spray, named adversary) |
 | Active Threat — App & Tenant | `data-exfiltration` | Bulk or anomalous data egress at the environment level |
 | Active Threat — App & Tenant | `lateral-movement` | Adversary moving between workloads, accounts, or environments |
-| Workload & Supply Chain | `workload-compromise` | A deployed workload is compromised / supply-chain poisoned |
+| Workload & Supply Chain | `workload-compromised` | A deployed workload is compromised / supply-chain poisoned (shares a name with the equivalent WISE event; distinguished by Transmitter, not by name) |
 | Workload & Supply Chain | `anomalous-workload-behavior` | Runtime anomaly short of confirmed compromise (precursor) |
-| Trust & Identity Infrastructure | `federation-trust-compromise` | IdP, federation link, or token-signing key compromised (Golden SAML, stolen key) |
-| Trust & Identity Infrastructure | `secret-exposure` | A non-human secret (service key, API token, cert) was exposed or leaked |
-| Trust & Identity Infrastructure | `trust-anchor-change` | A CA, trust-store entry, or pinned key was added / removed / changed |
 | Response Coordination & Lifecycle | `containment-status-change` | Something was isolated, quarantined, or released (the "action taken" signal) |
 | Response Coordination & Lifecycle | `environment-lifecycle-change` | An environment was created, cloned, suspended, or decommissioned |
+
+Federation-, credential-, and trust-anchor-related events that appeared in earlier IITP
+drafts have been moved to the WISE profile (or IPSIE, where an OIDC federation is
+governed). See §3 "Removing overlap with WISE" above.
 
 The Working Group may also produce non-normative supporting material, including an
 implementer's guide and interoperability test vectors, and may contribute
