@@ -200,7 +200,7 @@ footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);color:v
       <div id="events"></div>
 
       <footer>
-        Built from the <a href="index.html">IITP 1.0 specification</a> (draft 01) and the <a href="event-catalog.html">IITP Event Catalog</a> (discussion draft, 28 June 2026). See also the <a href="openid-iitp-wise-comparison.html">IITP / WISE comparison</a>. Events marked <em>In spec</em> reproduce the draft's normative claims and examples. For <em>Proposed</em> events, claim names come from the catalog. Their types, value sets, example payloads and suggested action names are illustrative and not yet specified anywhere. This is an independent working draft, not a publication of the OpenID Foundation.
+        Built from the <a href="index.html">IITP 1.0 specification</a> (draft 01) and the <a href="event-catalog.html">IITP Event Catalog</a> (discussion draft, 28 June 2026). See also the <a href="openid-iitp-wise-comparison.html">IITP / WISE comparison</a> and the <a href="wise-event-reference.html">WISE Event Reference</a>. Events marked <em>In spec</em> reproduce the draft's normative claims and examples. For <em>Proposed</em> events, claim names come from the catalog. Their types, value sets, example payloads and suggested action names are illustrative and not yet specified anywhere. This is an independent working draft, not a publication of the OpenID Foundation.
       </footer>
     </main>
   </div>
@@ -276,7 +276,7 @@ const EVENTS = [
  claims:[["vulnerability_id","—","Identifier, e.g. a CVE ID."],["exploit_status","—","Whether it is exploitable or being exploited, e.g. PoC available or exploited in the wild."],["exposure","—","How reachable it is, e.g. internet-facing or internal only."],["affected_components","—","Hosts, images or services that carry it."]],
  actions:[["quarantine",1],["virtual-patch",0],["restrict-exposure",0]],
  response:"Virtual-patch at the edge, restrict exposure, and prioritize remediation.",
- notes:["<b>Overlaps WISE:</b> WISE covers workload posture and vulnerability state. See the IITP / WISE comparison."],
+ notes:["<b>Overlaps WISE:</b> <a href='wise-event-reference.html#workload-vulnerability-status-changed'><code>workload-vulnerability-status-changed</code></a> reports the same fact. It follows VEX, so it can also relax a warning (<code>fixed</code>, <code>not_affected</code>)."],
  example:set("https://asm.example.com/","https://edge.example.com/ssf","vuln-9921",envSub("cloud-account","123456789012",{provider:"aws"}),"critical-vulnerability-exposed",{
   vulnerability_id:"CVE-2026-12345", exploit_status:"exploited-in-wild", exposure:"internet",
   affected_components:[{type:"image",id:"registry.example.com/gateway:3.1.0"}],
@@ -354,7 +354,7 @@ const EVENTS = [
  ],
  actions:[["revoke-workload-identity",1],["block-service-account-traffic",1],["block-agent-communication",1],["quarantine",1]],
  response:"Revoke the workload's identity, block OAuth and service-to-service traffic for its service account, and stop agents from talking to it.",
- notes:["<b>Overlaps WISE:</b> WISE models workload identity lifecycle and trust directly, with the Transmitter acting as an <em>authority</em> rather than a detector. This is the sharpest collision point between the two drafts."],
+ notes:["<b>Overlaps WISE:</b> <a href='wise-event-reference.html#workload-compromised'><code>workload-compromised</code></a> is the same event with a different tense, sent by the trust domain <em>authority</em> rather than a detector. <a href='wise-event-reference.html#workload-provenance-changed'><code>workload-provenance-changed</code></a> covers the supply-chain case separately. This is the sharpest collision point between the two drafts."],
  example:set("https://runtime-sec.example.com/","https://mesh.example.com/ssf","wl-compromise-42",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"workload-compromise",{
   compromise_type:"supply-chain", trust_status:"untrusted",
   workload:{name:"payments-api",namespace:"prod",cluster:"prod-cluster-eu-1",image:"registry.example.com/payments-api:1.8.3",image_digest:"sha256:5e0c...a91f",service_account:"payments-api-sa",spiffe_id:"spiffe://example.com/ns/prod/sa/payments-api-sa"},
@@ -373,7 +373,7 @@ const EVENTS = [
  claims:[["behavior_type","—","Kind of anomaly, e.g. process, network or file access."],["baseline_deviation","—","How far from normal."],["workload","—","The workload, likely the same shape as in #7."],["confidence","—","Called out explicitly here, because low confidence is what defines this event."]],
  actions:[["monitor",1],["quarantine",1],["elevate-detection",1]],
  response:"Watch closely. Quarantine pending review if the Receiver's policy allows it, and raise detection.",
- notes:["<b>Overlaps WISE:</b> it maps to WISE workload posture and behavior events."],
+ notes:["<b>Overlaps WISE:</b> <a href='wise-event-reference.html#anomalous-behavior-detected'><code>anomalous-behavior-detected</code></a> is functionally interchangeable with this event."],
  example:set("https://runtime-sec.example.com/","https://mesh.example.com/ssf","wl-anom-17",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"anomalous-workload-behavior",{
   behavior_type:"unexpected-egress", baseline_deviation:"new destination 203.0.113.50:4444 never seen in 30d baseline",
   workload:{name:"payments-api",namespace:"prod",service_account:"payments-api-sa"},
@@ -389,7 +389,7 @@ const EVENTS = [
  claims:[["trust_object","—","What is compromised: issuer, federation link or signing key."],["affected_issuer","—","The issuer whose assertions are suspect."],["compromise_vector","—","How it was compromised."],["valid_from","—","The point in time from which that issuer's assertions should be distrusted."]],
  actions:[["distrust-issuer",0],["force-global-reauth",0],["rotate-signing-keys",0]],
  response:"Stop accepting assertions from the issuer, force re-authentication everywhere, and rotate keys.",
- notes:["<b>Registry gap:</b> none of the likely responses exist in the current <code>recommended_actions</code> registry."],
+ notes:["<b>Registry gap:</b> none of the likely responses exist in the current <code>recommended_actions</code> registry.","<b>Overlaps WISE:</b> <a href='wise-event-reference.html#trust-domain-federation-revoked'><code>trust-domain-federation-revoked</code></a> states the same fact as a binding <em>decision</em> (credentials MUST be rejected), not a detection."],
  example:set("https://itdr.example.com/","https://sp.example.com/ssf","fed-7",envSub("tenant","contoso.example",{domain:"contoso.example"}),"federation-trust-compromise",{
   trust_object:{type:"signing-key",kid:"adfs-token-signing-2025"}, affected_issuer:"https://sts.contoso.example/adfs",
   compromise_vector:"golden-saml", valid_from:1782600000,
@@ -404,7 +404,7 @@ const EVENTS = [
  claims:[["secret_type","—","What kind of secret: access key, API token, certificate, and so on."],["exposure_location","—","Where it was found."],["affected_resource","—","What the secret grants access to."],["rotation_required","—","Whether rotation is required."]],
  actions:[["revoke-workload-identity",1],["revoke-derived-tokens",0],["rotate-secret",0]],
  response:"Revoke any tokens minted from the secret, force rotation, and block the identity it belongs to.",
- notes:["<b>Overlap inside IITP:</b> <code>workload-compromise</code> already has <code>compromise_type: secret-exposure</code>.","<b>Overlaps WISE:</b> WISE covers credential compromise and rotation for workloads."],
+ notes:["<b>Overlap inside IITP:</b> <code>workload-compromise</code> already has <code>compromise_type: secret-exposure</code>.","<b>Overlaps WISE:</b> <a href='wise-event-reference.html#credential-compromise'><code>credential-compromise</code></a> states the same fact as the credential issuer rather than as a detector."],
  example:set("https://secrets-scan.example.com/","https://iam.example.com/ssf","secret-88",envSub("cloud-account","123456789012",{provider:"aws"}),"secret-exposure",{
   secret_type:"cloud-access-key", exposure_location:{type:"public-repo",url:"https://git.example.com/acme/tools/blob/main/.env"},
   affected_resource:{type:"iam-user",id:"arn:aws:iam::123456789012:user/ci-deployer"}, rotation_required:true,
@@ -420,7 +420,7 @@ const EVENTS = [
  claims:[["anchor_type","—","CA, trust bundle or pinned key."],["change_type","—","Added, removed or modified."],["fingerprint","—","Identifies the anchor."],["expected","—","Whether the change was planned or authorized."]],
  actions:[["distrust-anchor",0],["re-pin",0]],
  response:"Distrust certificates that chain to the new anchor, re-pin, and alert.",
- notes:["<b>Overlaps WISE:</b> WISE has trust-anchor events for WIMSE and SPIFFE trust domains."],
+ notes:["<b>Overlaps WISE:</b> <a href='wise-event-reference.html#trust-anchor-changed'><code>trust-anchor-changed</code></a> is the same event and much more detailed: anchor types, five change types, grace periods and bundle URIs."],
  example:set("https://pki-watch.example.com/","https://mesh.example.com/ssf","anchor-3",envSub("k8s-cluster","prod-cluster-eu-1"),"trust-anchor-change",{
   anchor_type:"root-ca", change_type:"added", fingerprint:"sha256:9f86d0…0f00a08", expected:false,
   severity:"high", confidence:"high", initiating_entity:"detector"})

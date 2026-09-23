@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Every event in the OpenID WISE Profile draft 02: what triggers it, who sends it, its claims, how much force it carries for a Receiver, and an example SET.">
+<title>WISE Event Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --ground:#F4F4F8; --surface:#FFFFFF; --ink:#181B2C; --muted:#5A5F78; --rule:#D9DBE6;
+  --accent:#4450A0; --accent-ink:#FFFFFF; --accent-soft:#E6E8F5;
+  --warn:#8F5A00; --warn-soft:#FBF0DC;
+  --bind:#A3242F; --bind-soft:#F9E3E4;
+  --code-bg:#EFF0F6; --code-key:#4450A0; --code-str:#3F6B1F; --code-num:#8F3F71; --code-punct:#7C8198;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans","Arial Narrow",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#10121C; --surface:#171A27; --ink:#E4E6F0; --muted:#9A9FB8; --rule:#2B2F44;
+    --accent:#9CA6F2; --accent-ink:#12152A; --accent-soft:#232842;
+    --warn:#E3AB4E; --warn-soft:#33280F;
+    --bind:#F08A92; --bind-soft:#3A1C20;
+    --code-bg:#121522; --code-key:#A9B2F5; --code-str:#A5CF7E; --code-num:#E39BC8; --code-punct:#6E7390;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#10121C; --surface:#171A27; --ink:#E4E6F0; --muted:#9A9FB8; --rule:#2B2F44;
+  --accent:#9CA6F2; --accent-ink:#12152A; --accent-soft:#232842;
+  --warn:#E3AB4E; --warn-soft:#33280F;
+  --bind:#F08A92; --bind-soft:#3A1C20;
+  --code-bg:#121522; --code-key:#A9B2F5; --code-str:#A5CF7E; --code-num:#E39BC8; --code-punct:#6E7390;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--ground);color:var(--ink);font:15px/1.6 var(--sans);padding-inline:16px;padding-block:0 64px}
+a{color:var(--accent)}
+code,.mono{font-family:var(--mono);font-size:.88em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+.wrap{max-width:1180px;margin:0 auto}
+header.top{padding-block:48px 28px;border-bottom:1px solid var(--rule);display:grid;gap:14px}
+.eyebrow{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font:700 clamp(30px,5vw,46px)/1.05 var(--cond);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lede{max-width:70ch;margin:0;color:var(--muted);font-size:16px}
+.lede strong{color:var(--ink);font-weight:600}
+.counts{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted)}
+.counts b{font:600 15px var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.byline{font-size:13px;color:var(--muted);max-width:80ch}
+
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;padding-top:32px}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr);gap:24px}}
+
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;font-size:13px}
+@media (max-width:880px){nav.toc{position:static;max-height:none;border:1px solid var(--rule);background:var(--surface);border-radius:6px;padding:14px}}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.filters button{font:500 12px var(--sans);border:1px solid var(--rule);background:var(--surface);color:var(--ink);padding:5px 10px;border-radius:999px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.toc h4{margin:14px 0 4px;font:600 11px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+.toc a{display:flex;align-items:center;gap:8px;padding:3px 6px;margin-inline:-6px;border-radius:4px;color:var(--ink);text-decoration:none;font-family:var(--mono);font-size:12.5px;word-break:break-word}
+.toc a:hover{background:var(--accent-soft)}
+.fdot{width:8px;height:8px;border-radius:2px;flex:none}
+.fdot.binding{background:var(--bind)}
+.fdot.immediate{background:var(--bind);opacity:.55}
+.fdot.advisory{background:var(--warn)}
+.fdot.info{border:1.5px solid var(--muted)}
+
+main{min-width:0}
+section.shared{margin-bottom:48px}
+h2.sect{font:600 22px/1.2 var(--cond);margin:0 0 6px}
+.sect-note{color:var(--muted);margin:0 0 16px;max-width:72ch}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:8px 12px;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:0}
+th{font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--ground)}
+td:first-child{font-family:var(--mono);font-size:12.5px;white-space:nowrap;color:var(--accent)}
+td.req{font:500 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+td.req.r{color:var(--ink)}
+.enum{display:block;margin-top:3px;color:var(--muted);font-size:12.5px}
+.enum code{font-size:11.5px;background:var(--code-bg);padding:1px 4px;border-radius:3px;color:var(--ink)}
+.twocol{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+
+.forces{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden;margin-top:14px}
+.forces div{background:var(--surface);padding:12px 14px;display:grid;gap:4px;align-content:start}
+.forces p{margin:0;font-size:13px;color:var(--muted)}
+.forces .n{font:600 12px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+
+.group{margin-top:56px}
+.group-head{border-top:2px solid var(--ink);padding-top:12px;margin-bottom:8px;display:grid;gap:4px}
+.group-head h3{margin:0;font:600 20px/1.2 var(--cond)}
+.group-head p{margin:0;color:var(--muted);max-width:72ch;font-size:14px}
+
+article.ev{padding-block:30px;border-bottom:1px solid var(--rule);display:grid;gap:18px;scroll-margin-top:16px}
+article.ev:last-child{border-bottom:0}
+.ev-head{display:grid;gap:6px}
+.ev-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px}
+.ev-title .num{font:500 13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.ev-title h3{margin:0;font:600 clamp(20px,3vw,25px)/1.2 var(--mono);letter-spacing:-.01em;word-break:break-word}
+.force{font:600 10.5px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;padding:5px 8px;border-radius:3px;white-space:nowrap}
+.force.binding{background:var(--bind);color:var(--surface)}
+.force.immediate{background:var(--bind-soft);color:var(--bind);border:1px solid var(--bind)}
+.force.advisory{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.force.info{border:1px dashed var(--muted);color:var(--muted)}
+.uri{font:12px var(--mono);color:var(--muted);word-break:break-all}
+.summary{font-size:17px;line-height:1.5;margin:0;max-width:62ch;text-wrap:pretty}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.facts div{background:var(--surface);padding:10px 14px}
+.facts dt{font:600 10.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.facts dd{margin:0;font-size:13.5px;line-height:1.45;word-break:break-word}
+
+.block h4{margin:0 0 8px;font:600 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.block p{margin:0 0 8px;max-width:72ch}
+.block ul{margin:0;padding-left:18px;max-width:72ch;display:grid;gap:3px}
+.quote{border-left:3px solid var(--rule);padding-left:12px;color:var(--ink);font-size:14px;max-width:72ch;margin:0 0 8px}
+
+.xref{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 4px 4px 0;font-size:13.5px;max-width:76ch}
+.xref p{margin:0}
+.xref p+p{margin-top:6px}
+.xref b{color:var(--accent)}
+.notes{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:0 4px 4px 0;font-size:13.5px;max-width:76ch}
+.notes p{margin:0}
+.notes p+p{margin-top:6px}
+.notes b{color:var(--warn)}
+
+details.ex{border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+details.ex summary{cursor:pointer;padding:10px 14px;font:500 13px var(--sans);display:flex;gap:10px;align-items:center;list-style:none}
+details.ex summary::-webkit-details-marker{display:none}
+details.ex summary::before{content:"▸";color:var(--muted);transition:transform .15s}
+details.ex[open] summary::before{transform:rotate(90deg)}
+details.ex summary small{color:var(--muted);font-weight:400}
+pre{margin:0;padding:14px 16px;background:var(--code-bg);overflow-x:auto;font:12.5px/1.55 var(--mono);border-top:1px solid var(--rule);border-radius:0 0 6px 6px;tab-size:2}
+.k{color:var(--code-key)} .s{color:var(--code-str)} .n{color:var(--code-num)} .p{color:var(--code-punct)}
+
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);color:var(--muted);font-size:12.5px;max-width:84ch}
+footer p{margin:0 0 8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">OpenID Shared Signals · WISE Profile 1.0 draft 02</div>
+    <h1>WISE Event Reference</h1>
+    <p class="lede">Every event in the Workload Identity Security Events (WISE) profile: what triggers it, who sends it, what's in the payload, and how much weight it carries for a Receiver. WISE events are about a <strong>workload identity</strong> or the <strong>trust domain</strong> that issues it. They are sent by the <strong>trust domain authority</strong>, the party that issued the credentials, so several of them oblige the Receiver to act.</p>
+    <div class="counts" id="counts"></div>
+    <div class="byline">WISE draft 02 (19 July 2026) is by J. Lombardo (AWS), D. Sneeggen (Signicat), S. O'Dell (CVS Health) and P. Kasselman (Defakto Security). The <a href="https://identitymonk.github.io/openid-wise/">authoritative text</a> lives in <a href="https://github.com/identitymonk/openid-wise">identitymonk/openid-wise</a>. This page was compiled alongside the <a href="iitp-event-reference.html">IITP Event Reference</a> for comparison.</div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Events">
+      <div class="filters" role="group" aria-label="Filter by force on the Receiver">
+        <button id="f-all" data-f="all" aria-pressed="true">All</button>
+        <button id="f-act" data-f="act" aria-pressed="false">Requires action</button>
+        <button id="f-iitp" data-f="iitp" aria-pressed="false">Overlaps IITP</button>
+      </div>
+      <div id="toc"></div>
+    </nav>
+
+    <main>
+      <section class="shared" id="shared">
+        <h2 class="sect">Shared by every event</h2>
+        <p class="sect-note">Each WISE event is a Security Event Token (SET, RFC 8417). Event types live under <code>https://schemas.openid.net/secevent/wise/event-type/</code>. Unlike IITP, the subject goes <em>inside</em> the event object as <code>subject</code>, and there are no common <code>severity</code> or <code>confidence</code> claims. Any event MAY carry CAEP's common optional claims:</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Claim</th><th>Req</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>reason_admin</td><td class="req">Optional</td><td>A localized admin/audit message: a JSON object keyed by BCP 47 language tag. MUST be the object form, not a plain string.</td></tr>
+            <tr><td>reason_user</td><td class="req">Optional</td><td>A localized user-facing message, with the same structure.</td></tr>
+            <tr><td>initiating_entity</td><td class="req">Optional</td><td>What triggered the event, as defined in CAEP.<span class="enum"><code>admin</code> <code>user</code> <code>policy</code> <code>system</code></span></td></tr>
+            <tr><td>event_timestamp</td><td class="req">Optional</td><td>Defined per event, usually as the time the change happened (NumericDate).</td></tr>
+          </tbody>
+        </table></div>
+
+        <div class="twocol" style="margin-top:24px">
+          <div class="block">
+            <h4>Subjects</h4>
+            <p>Subject identifiers follow RFC 9493 using the <code>uri</code> format. A workload is named by its WIMSE identifier, such as <code>wimse://trust.example.com/workload/payment-service</code>, a <code>spiffe://</code> ID, or an OAuth Client ID Metadata Document URI. Trust-domain-wide events name the trust domain itself, such as <code>wimse://trust.example.com</code>.</p>
+          </div>
+          <div class="block">
+            <h4>Credential types</h4>
+            <p>Credential events take a <code>credential_type</code>: <code>wit</code>, <code>wic</code>, <code>x509_svid</code>, <code>x509_generic</code>, <code>oauth_private_key_jwt</code>, <code>oauth_mtls</code>, <code>oauth_client_secret</code> or <code>api_key</code>. Proof-of-possession types are preferred. The legacy types are included so that mixed estates can still signal. Bound-key compromise is expressed by revoking the credential with <code>reason: key_compromise</code>.</p>
+          </div>
+        </div>
+
+        <h2 class="sect" style="margin-top:32px">How much force an event carries</h2>
+        <p class="sect-note">This is the main difference from IITP. A WISE Transmitter is the authority that issued the credential, so some events are binding on the Receiver. The labels below are this page's reading of the draft's MUST and SHOULD language.</p>
+        <div class="forces" id="forces"></div>
+      </section>
+
+      <div id="events"></div>
+
+      <footer>
+        <p>Compiled from the OpenID WISE Profile Specification 1.0, draft 02 (<code>openid-wise-profile-1_0.md</code> at identitymonk/openid-wise commit <code>99949b3</code>, 19 July 2026). Claims, allowed values, normative statements and examples marked <em>from draft 02</em> reproduce the draft. The following are this page's own reading and are not WISE text: the “force” labels, the “What causes it” trigger lists, typical senders and Receivers, and examples marked <em>illustrative</em> (draft 02 gives no example for those events).</p>
+        <p>Overlap pairings follow the <a href="openid-iitp-wise-comparison.html">IITP / WISE comparison</a>, which is an assessment and not a working group position. Neither WISE nor IITP is an OpenID Foundation publication.</p>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script>
+const BASE = "https://schemas.openid.net/secevent/wise/event-type/";
+const IITP = "iitp-event-reference.html#";
+
+const FORCES = {
+  binding:  {label:"Binding", desc:"The draft uses MUST: the Receiver has to update, reject or invalidate."},
+  immediate:{label:"Act immediately", desc:"Security Considerations: Receivers SHOULD reject the affected material without waiting for confirmation."},
+  advisory: {label:"Advisory", desc:"Input to the Receiver's own policy. For vulnerability status, the draft says not to block on the event alone."},
+  info:     {label:"Informational", desc:"Lifecycle, audit or operational state. There is nothing to enforce."}
+};
+
+const GROUPS = [
+  {id:"cred", name:"Workload Credential Lifecycle", blurb:"Changes to the credentials the trust domain authority issues to workloads. WISE has no separate key events: a rotated or compromised bound key is signalled through these credential events."},
+  {id:"life", name:"Workload Lifecycle", blurb:"The administrative state of a workload. These events carry only the state change. The resulting credential revocation or issuance is sent as separate companion credential events."},
+  {id:"trust", name:"Trust and Federation", blurb:"Changes to the trust material that federated peers and relying parties use to validate a trust domain's credentials."},
+  {id:"policy", name:"Policy and Posture Evaluation", blurb:"Changes to the rules for issuance, posture evaluation and validation, and the results of posture evaluation. In the WIMSE model, the Credential Service evaluates posture before every issuance or renewal."},
+  {id:"runtime", name:"Runtime Posture", blurb:"Changes observed in a running workload, from routine moves to confirmed compromise."},
+  {id:"supply", name:"Supply Chain", blurb:"Signals that a workload's provenance or vulnerability status has changed. The detail, such as an SBOM, attestation or VEX statement, is fetched from a referenced URI rather than carried in the event."}
+];
+
+function set(type, uri, body, aud="https://rp.partner.example.net/wise", jti="wise-evt-…"){
+  return {iss:"https://authority.example.com/", jti, iat:1700000000, aud,
+    events:{[BASE+type]:{subject:{format:"uri", uri}, ...body}}};
+}
+const WL = "wimse://trust.example.com/workload/payment-service";
+const TD = "wimse://trust.example.com";
+const CRED_TYPES = ["wit","wic","x509_svid","x509_generic","oauth_private_key_jwt","oauth_mtls","oauth_client_secret","api_key"];
+const AUTH = "Trust domain authority (Credential Service)";
+const WLSUB = "<code>uri</code>: workload identifier";
+const TDSUB = "<code>uri</code>: trust domain";
+const POLICY_CLAIMS = [["policy_id","O","Identifier of the policy that changed."],["change_description","O","Human-readable description of the change."],["effective_at","O","When the new policy takes effect."],["event_timestamp","O","When the change was made."]];
+
+const EVENTS = [
+/* ---------------- credential lifecycle ---------------- */
+{g:"cred", name:"credential-issued", force:"info",
+ summary:"The trust domain authority issued a new credential to a workload.",
+ facts:{sender:AUTH, receiver:"Relying parties, federated peers, audit and inventory", subject:WLSUB, pair:"<code>credential-rotated</code>, <code>credential-revoked</code>, or natural expiry"},
+ causes:"Routine provisioning. WIMSE credentials are short-lived by design, so this event can be frequent. It is also the companion event when a re-enabled workload gets a fresh credential.",
+ triggers:["A new workload is provisioned","A workload re-enabled after <code>workload-disabled</code> gets a credential","A legacy credential (client secret, API key) is minted for a mixed estate"],
+ claims:[
+  ["credential_type","R","Type of credential issued. Other values MAY be defined by profile or agreement.",CRED_TYPES],
+  ["credential_id","O","E.g. certificate serial number or <code>jti</code>."],
+  ["expiry","O","Credential expiration (NumericDate)."],
+  ["key_storage","O","Where the bound private key is stored.",["hardware","software"]],
+  ["key_storage_ecosystem","O","Free text describing the protecting environment, such as “AWS Nitro Enclave” or “FIPS 140-3 Level 3 HSM”."],
+  ["event_timestamp","O","When the credential was issued."]
+ ],
+ response:"Record the credential. <code>key_storage</code> and the credential type can feed the Receiver's own posture decisions, since legacy bearer types are weaker than proof-of-possession ones.",
+ example:{from:true, v:set("credential-issued",WL,{credential_type:"wic",credential_id:"serial:ABC123DEF456",expiry:1700086400},undefined,"wise-evt-001")}
+},
+{g:"cred", name:"credential-rotated", force:"info",
+ summary:"A workload's credential was rotated: a new credential replaces the previous one.",
+ facts:{sender:AUTH, receiver:"Relying parties, federated peers", subject:WLSUB, pair:"n/a (the event itself retires the previous credential)"},
+ causes:"Scheduled rotation, or replacement ahead of a risk. When a bound key is rotated, WISE signals it this way rather than with a separate key event.",
+ triggers:["A scheduled credential rotation","A bound key is replaced and a new credential issued","A credential type migration, e.g. from a secret to proof-of-possession"],
+ claims:[
+  ["credential_type","R","Type of credential rotated. Same values as <code>credential-issued</code>."],
+  ["previous_credential_id","O","The credential being replaced."],
+  ["new_credential_id","O","The newly issued credential."],
+  ["grace_period_end","O","Until when the previous credential stays valid (NumericDate)."],
+  ["event_timestamp","O","When the rotation happened."]
+ ],
+ response:"Accept the new credential. Stop accepting the previous one after <code>grace_period_end</code>, or immediately if no grace period is given.",
+ example:{from:true, v:set("credential-rotated",WL,{credential_type:"wit",previous_credential_id:"jti:wit-2024-q4-001",new_credential_id:"jti:wit-2024-q4-002",grace_period_end:1700003600},undefined,"wise-evt-002")}
+},
+{g:"cred", name:"credential-revoked", force:"immediate",
+ summary:"A workload's credential was explicitly revoked before its natural expiry.",
+ facts:{sender:AUTH, receiver:"Relying parties, federated peers", subject:WLSUB, pair:"None; revocation is final for that credential"},
+ causes:"The authority has withdrawn a specific credential. This is also the companion event that carries out the cancellation when a workload is disabled or purged, and the way WISE expresses a compromised bound key.",
+ triggers:["The credential or its bound key is believed compromised (<code>compromise</code>, <code>key_compromise</code>)","A new credential supersedes it (<code>superseded</code>)","The workload no longer operates (<code>cessation</code>)","A policy violation (<code>policy_violation</code>)","It accompanies <code>workload-disabled</code> or <code>workload-purged</code>"],
+ claims:[
+  ["credential_type","R","Type of credential revoked."],
+  ["credential_id","O","The revoked credential."],
+  ["reason","O","Why it was revoked.",["compromise","key_compromise","superseded","cessation","policy_violation"]],
+  ["event_timestamp","O","When revocation occurred."]
+ ],
+ quote:"With reason <code>compromise</code> or <code>key_compromise</code>, Receivers SHOULD take immediate action to reject the affected credentials without waiting for additional confirmation.",
+ response:"Reject the credential. For the compromise reasons, do it immediately.",
+ example:{from:true, v:set("credential-revoked",WL,{credential_type:"wic",credential_id:"serial:ABC123DEF456",reason:"compromise"},undefined,"wise-evt-003")}
+},
+{g:"cred", name:"credential-compromise", force:"immediate", iitp:[["secret-exposure","Same fact. IITP frames it as a leak found in the environment by a detector. WISE frames it as a statement by the credential's issuer, alongside <code>credential-revoked</code>."]],
+ summary:"A workload credential is believed compromised. This is an advisory signal that may come before or alongside <code>credential-revoked</code>.",
+ facts:{sender:AUTH, receiver:"Relying parties, federated peers", subject:WLSUB, pair:"Usually followed by <code>credential-revoked</code>"},
+ causes:"The authority believes a credential's secret or key material is in the wrong hands, and it may not have revoked the credential yet.",
+ triggers:["Private key material is found in a public repository","A credential is used from an unexpected workload or location","A secrets store holding the credential is breached"],
+ claims:[
+  ["credential_type","R","Type of credential compromised."],
+  ["credential_id","O","The compromised credential."],
+  ["event_timestamp","O","When the compromise was detected."],
+  ["reason_admin","O","Localized description of the compromise."]
+ ],
+ quote:"Receivers SHOULD take immediate action to reject the affected credentials without waiting for additional confirmation.",
+ response:"Reject the credential now. Don't wait for the <code>credential-revoked</code> that is likely to follow.",
+ example:{from:true, v:set("credential-compromise",WL,{credential_type:"wit",credential_id:"jti:wit-signing-key-2024-q4",reason_admin:{en:"Private key material detected in public repository"}},undefined,"wise-evt-004")}
+},
+{g:"cred", name:"credential-renewal-failure", force:"info",
+ summary:"The provisioning pipeline failed to renew a workload's credential, so the workload may lose the ability to authenticate when the current one expires.",
+ facts:{sender:AUTH, receiver:"Relying parties, operations and SRE, SOC", subject:WLSUB, pair:"A later <code>credential-issued</code> once renewal succeeds"},
+ causes:"WIMSE credentials are deliberately short-lived so that posture is re-checked before each re-issue. Renewal is normally automatic. This event says it broke.",
+ triggers:["The Credential Service is unreachable","The workload failed posture evaluation","Issuance policy denied the renewal","An internal pipeline error"],
+ claims:[
+  ["credential_type","R","Type of credential that failed to renew."],
+  ["credential_id","O","The credential that was not renewed."],
+  ["current_expiry","O","When the last valid credential expires (NumericDate)."],
+  ["failure_reason","O","Why renewal failed.",["credential_service_unreachable","posture_evaluation_failed","policy_denied","internal_error"]],
+  ["event_timestamp","O","When the failure was detected."]
+ ],
+ response:"Expect authentication from this workload to fail after <code>current_expiry</code>. If the reason is <code>posture_evaluation_failed</code>, treat it as a posture signal as well as an outage warning.",
+ example:{from:true, v:set("credential-renewal-failure",WL,{credential_type:"wit",current_expiry:1700003600,failure_reason:"posture_evaluation_failed"},undefined,"wise-evt-005")}
+},
+/* ---------------- workload lifecycle ---------------- */
+{g:"life", name:"workload-disabled", force:"info",
+ summary:"The trust domain authority has suspended a workload. It will issue no new credentials and cancels the current ones.",
+ facts:{sender:AUTH, receiver:"Relying parties, federated peers", subject:WLSUB, pair:"<code>workload-enabled</code>"},
+ causes:"A suspension, which can be undone. The event carries only the state change. The cancellation itself is sent as <code>credential-revoked</code> events, which the Transmitter SHOULD emit alongside it.",
+ triggers:["The workload is believed compromised (<code>compromise</code>)","A policy violation (<code>policy_violation</code>)","An administrator action (<code>administrative</code>)","Temporary maintenance (<code>maintenance</code>)"],
+ claims:[["reason","O","Why the workload was disabled.",["compromise","policy_violation","administrative","maintenance"]],["event_timestamp","O","When it was disabled."]],
+ response:"Treat the workload as suspended. Enforcement comes from the companion <code>credential-revoked</code> events, so a Receiver that only sees this event has the state but not the credential IDs.",
+ example:{from:false, v:set("workload-disabled",WL,{reason:"maintenance",event_timestamp:1700000000})}
+},
+{g:"life", name:"workload-enabled", force:"info",
+ summary:"A previously disabled workload is active again, and the authority will resume issuing credentials for it.",
+ facts:{sender:AUTH, receiver:"Relying parties, federated peers", subject:WLSUB, pair:"Reverses <code>workload-disabled</code>"},
+ causes:"The suspension is over. Any credential provisioned as a result is sent separately as <code>credential-issued</code>.",
+ triggers:["Maintenance finishes","An investigation clears the workload","An administrator re-enables it"],
+ claims:[["event_timestamp","O","When it was re-enabled."]],
+ response:"Lift any suspension kept against the workload, and expect a <code>credential-issued</code> to follow.",
+ example:{from:false, v:set("workload-enabled",WL,{event_timestamp:1700007200})}
+},
+{g:"life", name:"workload-purged", force:"binding",
+ summary:"A workload has been permanently removed from the trust domain. This cannot be undone, and the workload will not be re-provisioned.",
+ facts:{sender:AUTH, receiver:"Relying parties, federated peers, inventory", subject:WLSUB, pair:"None; irreversible"},
+ causes:"Permanent decommissioning. As with disablement, the actual credential cancellations are sent as companion <code>credential-revoked</code> events.",
+ triggers:["A service is retired","An agent or workload identity is deleted","An identity is removed after a compromise rather than rebuilt"],
+ claims:[["event_timestamp","O","When it was removed."]],
+ quote:"All credentials previously issued for this workload MUST be considered invalid.",
+ response:"Invalidate every credential for this workload, including any not listed in companion events, and drop it from inventory.",
+ example:{from:false, v:set("workload-purged",WL,{event_timestamp:1700000000})}
+},
+/* ---------------- trust & federation ---------------- */
+{g:"trust", name:"trust-anchor-changed", force:"binding", iitp:[["trust-anchor-change","Same event with a different tense. WISE's version is much deeper: <code>x509_ca</code> vs <code>jwks</code>, five change types, grace-period timing, and URIs to fetch the new bundle. IITP's has four fields and no rotation semantics."]],
+ summary:"The trust anchors for a trust domain have changed, whether a CA or a JWK Set.",
+ facts:{sender:AUTH, receiver:"Federated peers, relying parties", subject:TDSUB, pair:"n/a (a later change supersedes it)"},
+ causes:"Anything that changes what a Receiver needs to validate the domain's credentials, from routine key rotation to revoking a compromised CA.",
+ triggers:["Scheduled JWKS signing-key rotation","Proactive rotation ahead of expiry","A CA revoked after compromise","A policy-driven replacement of the whole bundle"],
+ claims:[
+  ["anchor_type","R","Kind of trust material.",["x509_ca","jwks"]],
+  ["change_type","R","Nature of the change.",["key_added","key_rotated","key_revoked","key_expired","full_replacement"]],
+  ["trust_domain","R","FQDN of the trust domain."],
+  ["effective_at","O","When the new material is or became active."],
+  ["old_material_expiry","O","End of the grace period for the old material."],
+  ["jwks_uri","O","Where to fetch the updated JWK Set (for <code>jwks</code>)."],
+  ["x509_bundle_uri","O","Where to fetch the updated CA bundle (for <code>x509_ca</code>)."],
+  ["key_id","O","The affected key: JWKS <code>kid</code>, or X.509 serial or SKI."],
+  ["reason","O","Why.",["scheduled_rotation","compromise","policy_change","expiry"]]
+ ],
+ quote:"Relying parties and federated peers MUST update their validation material accordingly. With reason <code>compromise</code>, Receivers SHOULD act immediately.",
+ response:"Fetch the new material from <code>jwks_uri</code> or <code>x509_bundle_uri</code>, honor the grace period, and for <code>key_revoked</code> or <code>compromise</code> stop trusting the old anchor at once.",
+ example:{from:true, v:set("trust-anchor-changed",TD,{anchor_type:"jwks",change_type:"key_rotated",trust_domain:"trust.example.com",effective_at:1700000000,old_material_expiry:1700604800,jwks_uri:"https://authority.example.com/.well-known/jwks.json",key_id:"kid:signing-2024-q4",reason:"scheduled_rotation"},"https://federation-peer.example.net/wise","wise-evt-020")}
+},
+{g:"trust", name:"trust-domain-federation-revoked", force:"binding", iitp:[["federation-trust-compromise","Opposite framing. IITP reports a <em>detection</em>, such as Golden SAML or a stolen signing key, as advice. WISE reports a <em>decision</em>: federation is revoked and credentials MUST be rejected. It's the same fact, observed in one draft and declared in the other."]],
+ summary:"A previously federated trust domain is no longer trusted.",
+ facts:{sender:"Trust domain authority of the peer ending federation", receiver:"Relying parties that accept the revoked domain's credentials", subject:TDSUB, pair:"None defined"},
+ causes:"A decision to end trust with a whole domain, for security or business reasons.",
+ triggers:["The federated domain is believed compromised (<code>compromise</code>)","A policy violation (<code>policy_violation</code>)","An administrative decision (<code>administrative</code>)","The business relationship ended (<code>contractual</code>)"],
+ claims:[
+  ["trust_domain","R","FQDN of the domain that is no longer trusted."],
+  ["reason","O","Why.",["compromise","policy_violation","administrative","contractual"]],
+  ["effective_at","O","When the revocation takes effect."],
+  ["event_timestamp","O","When the decision was made."]
+ ],
+ quote:"All workload credentials originating from the specified trust domain MUST be rejected.",
+ response:"Reject every credential from that domain from <code>effective_at</code> onward, and remove its anchors.",
+ example:{from:false, v:set("trust-domain-federation-revoked","wimse://partner.example.org",{trust_domain:"partner.example.org",reason:"contractual",effective_at:1700086400,event_timestamp:1700000000},"https://federation-peer.example.net/wise")}
+},
+/* ---------------- policy & posture ---------------- */
+{g:"policy", name:"issuance-policy-changed", force:"info",
+ summary:"The policy that governs credential issuance for workloads has changed.",
+ facts:{sender:AUTH, receiver:"Relying parties, federated peers, audit", subject:"Not stated in draft 02 (a trust domain URI is the natural fit)", pair:"n/a"},
+ causes:"A rule change that can affect which workloads are eligible, which credential types are issued, lifetime limits, or what posture evidence is required.",
+ triggers:["Credential lifetime is shortened","A legacy credential type is no longer issued","New posture evidence is required for issuance"],
+ claims:POLICY_CLAIMS,
+ response:"Re-read the policy if the Receiver depends on it, and expect changes in what gets issued from <code>effective_at</code>.",
+ example:{from:false, v:set("issuance-policy-changed",TD,{policy_id:"issuance-v14",change_description:"Maximum WIT lifetime reduced from 60 to 15 minutes",effective_at:1700086400})}
+},
+{g:"policy", name:"posture-evaluation-policy-changed", force:"info",
+ summary:"The posture evaluation policy has changed: what evidence is required, what criteria apply, or which deployment signals count.",
+ facts:{sender:AUTH, receiver:"Relying parties, audit", subject:"Not stated in draft 02 (a trust domain URI is the natural fit)", pair:"n/a"},
+ causes:"A change to the rules the Credential Service applies before issuing or renewing credentials.",
+ triggers:["TEE attestation becomes mandatory","The image-signing requirement is tightened","New runtime configuration checks are added"],
+ claims:POLICY_CLAIMS,
+ response:"Expect a wave of <code>posture-evaluation-failed</code> or <code>credential-renewal-failure</code> events if existing workloads don't meet the new bar.",
+ example:{from:false, v:set("posture-evaluation-policy-changed",TD,{policy_id:"posture-v7",change_description:"Signed images now required for all production workloads",effective_at:1700086400})}
+},
+{g:"policy", name:"validation-policy-changed", force:"info",
+ summary:"The policy that relying parties use to validate workload credentials has changed.",
+ facts:{sender:AUTH, receiver:"Relying parties", subject:"Not stated in draft 02 (a trust domain URI is the natural fit)", pair:"n/a"},
+ causes:"Changes to trust-anchor validation rules, claim requirements, audience restrictions, or which credential types are acceptable.",
+ triggers:["An audience restriction is added","A credential type is no longer accepted","New required claims are introduced"],
+ claims:POLICY_CLAIMS,
+ response:"Update validation configuration before <code>effective_at</code>.",
+ example:{from:false, v:set("validation-policy-changed",TD,{policy_id:"validation-v3",change_description:"oauth_client_secret no longer accepted for service-to-service calls",effective_at:1700086400})}
+},
+{g:"policy", name:"posture-evaluation-failed", force:"advisory",
+ summary:"A workload did not pass posture evaluation. Its runtime environment, software integrity or deployment context fell short of the issuance requirements.",
+ facts:{sender:"Trust domain authority (the Credential Service that ran the evaluation)", receiver:"Relying parties, SOC", subject:WLSUB, pair:"A later <code>posture-evaluation-succeeded</code>"},
+ causes:"The Credential Service ran its checks and the workload failed them, so no credential will be issued.",
+ triggers:["Node integrity or TEE verification fails (<code>platform</code>)","The binary or image hash doesn't match (<code>workload</code>)","Configuration or network posture is non-compliant (<code>runtime</code>)"],
+ claims:[
+  ["evaluation_type","O","Scope of the failed evaluation.",["platform","workload","runtime"]],
+  ["reason","O","Why it failed (free text)."],
+  ["event_timestamp","O","When it failed."]
+ ],
+ response:"Weigh it against the Receiver's own policy. Existing credentials stay valid until expiry unless revoked, but the workload's trust is in question. It often comes with <code>credential-renewal-failure</code>.",
+ example:{from:false, v:set("posture-evaluation-failed",WL,{evaluation_type:"workload",reason:"Image digest does not match signed release",event_timestamp:1700000000})}
+},
+{g:"policy", name:"posture-evaluation-succeeded", force:"info",
+ summary:"A workload passed posture evaluation, and a credential was or will be issued.",
+ facts:{sender:"Trust domain authority (the Credential Service that ran the evaluation)", receiver:"Audit, pipeline health monitoring", subject:WLSUB, pair:"n/a"},
+ causes:"It is emitted on every successful evaluation as part of normal provisioning. It does <em>not</em> mean a failure came before it.",
+ triggers:["Any routine issuance or renewal that passes posture checks"],
+ claims:[["evaluation_type","O","Scope of the evaluation that passed."],["event_timestamp","O","When it passed."]],
+ response:"Use it as an audit trail and a health signal for the provisioning pipeline.",
+ notes:["<b>Volume:</b> because it fires on every successful evaluation of short-lived credentials, this is likely to be the highest-volume WISE event."],
+ example:{from:false, v:set("posture-evaluation-succeeded",WL,{evaluation_type:"platform",event_timestamp:1700000000})}
+},
+/* ---------------- runtime posture ---------------- */
+{g:"runtime", name:"workload-baseline-changed", force:"advisory",
+ summary:"A workload's runtime environment, deployment context or metadata has changed.",
+ facts:{sender:AUTH, receiver:"Relying parties", subject:WLSUB, pair:"n/a"},
+ causes:"The workload is still the same identity but is running somewhere or as something different. That may call for re-evaluating trust, or for fresh posture evaluation before new credentials are issued.",
+ triggers:["Migration to another node, region or zone (<code>migration</code>)","Instances added or removed (<code>scaling</code>)","A redeploy under the same identity (<code>redeployment</code>)","A new image or binary (<code>image_update</code>)","An identity-relevant config change (<code>config_change</code>)","A compute node swap (<code>node_reassignment</code>)"],
+ claims:[
+  ["reason","O","Why the baseline changed.",["migration","scaling","redeployment","image_update","config_change","node_reassignment"]],
+  ["previous_context","O","Prior environment metadata (structure defined by the implementation)."],
+  ["current_context","O","New environment metadata."],
+  ["posture_evaluation_status","O","Whether re-evaluation has happened.",["succeeded","pending","failed"]],
+  ["event_timestamp","O","When the change happened."]
+ ],
+ response:"Update whatever the Receiver pins to the old context, such as region or node. If <code>posture_evaluation_status</code> is <code>pending</code> or <code>failed</code>, hold back extra trust until it passes.",
+ example:{from:true, v:set("workload-baseline-changed",WL,{reason:"migration",previous_context:{region:"us-east-1",node:"node-abc"},current_context:{region:"eu-west-1",node:"node-xyz"},posture_evaluation_status:"succeeded"},undefined,"wise-evt-030")}
+},
+{g:"runtime", name:"workload-compromised", force:"immediate", iitp:[["workload-compromise","Same event with a different tense. IITP's version is far richer: <code>compromise_type</code>, <code>trust_status</code>, a workload object carrying <code>spiffe_id</code>, <code>affected_component</code> and <code>indicators</code>. WISE's carries only <code>detection_method</code>."]],
+ summary:"A workload is believed compromised based on runtime detection.",
+ facts:{sender:"Trust domain authority, drawing on runtime detection", receiver:"Relying parties, service mesh, SOC", subject:WLSUB, pair:"None defined. Likely followed by <code>workload-disabled</code> and <code>credential-revoked</code>"},
+ causes:"Runtime detection concludes the workload is in an attacker's hands. The draft calls this a high-severity signal.",
+ triggers:["An unexpected shell or process in the workload","A known-malicious binary is executing","Credential theft from the workload's memory or filesystem"],
+ claims:[["detection_method","O","How the compromise was detected (free text)."],["reason_admin","O","Localized description."],["event_timestamp","O","When it was detected."]],
+ quote:"This is a high-severity signal that SHOULD trigger immediate isolation or credential revocation.",
+ response:"Isolate the workload or reject its credentials right away, without waiting for confirmation.",
+ notes:["<b>No clearing path:</b> draft 02 has no way to retract a compromise assertion short of <code>workload-enabled</code> after a disable."],
+ example:{from:false, v:set("workload-compromised",WL,{detection_method:"runtime-sensor: reverse shell spawned from application process",reason_admin:{en:"Reverse shell observed in payment-service; isolate and revoke."},event_timestamp:1700000000})}
+},
+{g:"runtime", name:"anomalous-behavior-detected", force:"advisory", iitp:[["anomalous-workload-behavior","Functionally interchangeable. Both are deliberately the low-confidence tier below the compromise event, and they describe it in almost the same words."]],
+ summary:"Unusual behavior was observed for a workload. The signal is advisory and less severe than <code>workload-compromised</code>.",
+ facts:{sender:"Trust domain authority, drawing on runtime detection", receiver:"SIEM and SOC", subject:WLSUB, pair:"n/a. May escalate to <code>workload-compromised</code>"},
+ causes:"Something is off but not confirmed. The draft positions it explicitly for SIEM and SOC integration.",
+ triggers:["New outbound destinations","A spike in call volume or error rate","Unusual access patterns for the workload's identity"],
+ claims:[["anomaly_type","O","Category of anomaly (free text)."],["severity","O","One of only two WISE events with a severity claim.",["low","medium","high","critical"]],["reason_admin","O","Localized description."],["event_timestamp","O","When it was detected."]],
+ response:"Investigate, and correlate with other signals. Nothing in the draft asks for enforcement.",
+ example:{from:false, v:set("anomalous-behavior-detected",WL,{anomaly_type:"unexpected-egress",severity:"medium",reason_admin:{en:"New outbound destination not seen in 30-day baseline."},event_timestamp:1700000000})}
+},
+/* ---------------- supply chain ---------------- */
+{g:"supply", name:"workload-provenance-changed", force:"advisory", iitp:[["workload-compromise","Partial overlap. IITP folds supply-chain poisoning into one compromise event (<code>compromise_type: supply-chain</code> plus <code>affected_component</code>). WISE makes provenance its own signal, so it can report a provenance change that is not yet a compromise."]],
+ summary:"The provenance of a workload, such as its SBOM or a build attestation, has changed, been revoked, or failed verification.",
+ facts:{sender:AUTH, receiver:"Relying parties, supply-chain tooling", subject:WLSUB, pair:"A later <code>updated</code> provenance"},
+ causes:"The record of what a workload is built from has changed. The event points to the document; it doesn't carry it.",
+ triggers:["A new SBOM is published for a release (<code>updated</code>)","The source repo owner revokes a build attestation (<code>revoked</code>)","Signature or attestation verification fails (<code>verification_failed</code>)"],
+ claims:[
+  ["change_type","R","Nature of the change.",["updated","revoked","verification_failed"]],
+  ["provenance_uri","O","Where to fetch the provenance document."],
+  ["provenance_format","O","A hint such as <code>sbom</code> or <code>attestation</code>."],
+  ["artifact_digest","O","Digest of the artifact the provenance describes, for correlation with what is running."],
+  ["reason_admin","O","Localized description."],
+  ["event_timestamp","O","When the change happened."]
+ ],
+ quote:"A <code>revoked</code> provenance change, once validated, indicates that the affected provenance MUST NOT be relied upon.",
+ response:"Fetch the document and re-evaluate trust. For <code>revoked</code>, stop relying on that provenance.",
+ example:{from:true, v:set("workload-provenance-changed",WL,{change_type:"revoked",provenance_uri:"https://provenance.example.com/payment-service/attestation",reason_admin:{en:"Build provenance attestation revoked by source repository owner"}},undefined,"wise-evt-040")}
+},
+{g:"supply", name:"workload-vulnerability-status-changed", force:"advisory", iitp:[["critical-vulnerability-exposed","Same fact. WISE follows VEX, so it can go both ways: it can also say <code>not_affected</code> or <code>fixed</code> and relax a warning. IITP only raises the alarm."]],
+ summary:"A vulnerability's status with respect to a workload has changed, following the VEX model.",
+ facts:{sender:AUTH, receiver:"Relying parties, vulnerability management", subject:WLSUB, pair:"<code>status: fixed</code> or <code>not_affected</code>"},
+ causes:"A new vulnerability affects the workload, or an earlier warning no longer applies because the flaw was fixed or isn't reachable.",
+ triggers:["A new CVE affects a component (<code>affected</code>)","Analysis shows the vulnerable code isn't reachable (<code>not_affected</code>)","A patched release is deployed (<code>fixed</code>)","Triage is under way (<code>under_investigation</code>)"],
+ claims:[
+  ["vulnerability_id","R","Public identifier, e.g. a CVE ID."],
+  ["status","R","VEX status of the workload for this vulnerability.",["affected","not_affected","fixed","under_investigation"]],
+  ["severity","O","Qualitative severity for prioritization.",["low","medium","high","critical"]],
+  ["advisory_uri","O","Where to fetch the full advisory or VEX statement."],
+  ["reason_admin","O","Localized description."],
+  ["event_timestamp","O","When the status changed."]
+ ],
+ quote:"A Receiver SHOULD NOT block, revoke, or otherwise restrict a workload's access solely because such an event was received.",
+ response:"Weigh it with the advisory, the status and severity, and the Receiver's own risk posture. Relax earlier measures when <code>fixed</code> or <code>not_affected</code> arrives.",
+ example:{from:true, v:set("workload-vulnerability-status-changed",WL,{vulnerability_id:"CVE-2026-12345",status:"affected",severity:"critical",advisory_uri:"https://advisories.example.com/CVE-2026-12345"},undefined,"wise-evt-041")}
+}
+];
+
+/* ---------------- rendering ---------------- */
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function highlight(obj){
+  return esc(JSON.stringify(obj,null,2)).replace(/"((?:\\.|[^"\\])*?)"(\s*:)?|\b(-?\d+(?:\.\d+)?)\b|\b(true|false|null)\b|([{}\[\],])/g,
+    (m,str,colon,num,bool,punct)=>{
+      if(str!==undefined) return colon ? `<span class="k">"${str}"</span><span class="p">:</span>` : `<span class="s">"${str}"</span>`;
+      if(num!==undefined) return `<span class="n">${num}</span>`;
+      if(bool!==undefined) return `<span class="n">${bool}</span>`;
+      return `<span class="p">${punct}</span>`;
+    });
+}
+const REQ = {R:["Required","r"],O:["Optional",""]};
+EVENTS.forEach((e,i)=>e.n=i+1);
+const acts = e => e.force==="binding" || e.force==="immediate";
+
+function renderEvent(e){
+  const rows = e.claims.map(([c,r,m,en])=>{
+    const [rl,rc]=REQ[r];
+    const enumH = en ? `<span class="enum">${en.map(v=>`<code>${v}</code>`).join(" ")}</span>` : "";
+    return `<tr><td>${c}</td><td class="req ${rc}">${rl}</td><td>${m}${enumH}</td></tr>`;
+  }).join("");
+  const xref = e.iitp ? `<div class="xref">${e.iitp.map(([n,t])=>`<p><b>IITP counterpart:</b> <a href="${IITP}${n}"><code>${n}</code></a>. ${t}</p>`).join("")}</div>` : "";
+  const notes = e.notes ? `<div class="notes">${e.notes.map(n=>`<p>${n}</p>`).join("")}</div>` : "";
+  const quote = e.quote ? `<p class="quote">${e.quote}</p>` : "";
+  return `<article class="ev" id="${e.name}" data-act="${acts(e)}" data-iitp="${!!e.iitp}">
+    <div class="ev-head">
+      <div class="ev-title"><span class="num">#${e.n}</span><h3>${e.name}</h3><span class="force ${e.force}">${FORCES[e.force].label}</span></div>
+      <div class="uri">${BASE}${e.name}</div>
+    </div>
+    <p class="summary">${e.summary}</p>
+    <dl class="facts">
+      <div><dt>Sent by</dt><dd>${e.facts.sender}</dd></div>
+      <div><dt>Acted on by</dt><dd>${e.facts.receiver}</dd></div>
+      <div><dt>Subject</dt><dd>${e.facts.subject}</dd></div>
+      <div><dt>Reversed or cleared by</dt><dd>${e.facts.pair}</dd></div>
+    </dl>
+    <div class="block"><h4>What causes it</h4><p>${e.causes}</p><ul>${e.triggers.map(t=>`<li>${t}</li>`).join("")}</ul></div>
+    <div class="block"><h4>What it sends</h4>
+      <div class="tbl-wrap"><table><thead><tr><th>Claim</th><th>Req</th><th>Meaning</th></tr></thead><tbody>${rows}</tbody></table></div>
+    </div>
+    <div class="block"><h4>What a Receiver does</h4>${quote}<p>${e.response}</p></div>
+    ${xref}${notes}
+    <details class="ex" id="ex-${e.name}">
+      <summary>Example SET <small>${e.example.from ? "from draft 02 (non-normative)" : "illustrative only; draft 02 gives no example"}</small></summary>
+      <pre><code>${highlight(e.example.v)}</code></pre>
+    </details>
+  </article>`;
+}
+
+document.getElementById("events").innerHTML = GROUPS.map(g=>`<section class="group" data-group="${g.id}">
+    <div class="group-head"><h3>${g.name}</h3><p>${g.blurb}</p></div>
+    ${EVENTS.filter(e=>e.g===g.id).map(renderEvent).join("")}
+  </section>`).join("");
+
+document.getElementById("toc").innerHTML =
+  `<h4 style="margin-top:0">Overview</h4><ol><li><a href="#shared" style="font-family:var(--sans)">Shared claims &amp; force</a></li></ol>` +
+  GROUPS.map(g=>`<div data-group="${g.id}"><h4>${g.name}</h4><ol>${EVENTS.filter(e=>e.g===g.id).map(e=>
+    `<li data-act="${acts(e)}" data-iitp="${!!e.iitp}"><a href="#${e.name}" title="${FORCES[e.force].label}"><span class="fdot ${e.force}"></span>${e.name}</a></li>`).join("")}</ol></div>`).join("");
+
+document.getElementById("forces").innerHTML = Object.entries(FORCES).map(([k,f])=>{
+  const n = EVENTS.filter(e=>e.force===k).length;
+  return `<div><span><span class="force ${k}">${f.label}</span></span><span class="n">${n} event${n===1?"":"s"}</span><p>${f.desc}</p></div>`;
+}).join("");
+
+const nIitp = EVENTS.filter(e=>e.iitp).length;
+const nEx = EVENTS.filter(e=>e.example.from).length;
+document.getElementById("counts").innerHTML =
+  `<span><b>${EVENTS.length}</b> events</span><span><b>${GROUPS.length}</b> groups</span><span><b>${EVENTS.filter(acts).length}</b> require action</span><span><b>${nIitp}</b> overlap IITP</span><span><b>${nEx}</b> with a draft example</span>`;
+
+function applyFilter(f){
+  document.querySelectorAll(".filters button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.f===f)));
+  document.querySelectorAll("[data-act]").forEach(el=>{
+    el.hidden = (f==="act" && el.dataset.act!=="true") || (f==="iitp" && el.dataset.iitp!=="true");
+  });
+  document.querySelectorAll("[data-group]").forEach(el=>{
+    el.hidden = ![...el.querySelectorAll("[data-act]")].some(x=>!x.hidden);
+  });
+  try{ localStorage.setItem("wise-filter", f); }catch(_){}
+}
+document.querySelectorAll(".filters button").forEach(b=>b.addEventListener("click",()=>applyFilter(b.dataset.f)));
+let saved="all"; try{ saved = localStorage.getItem("wise-filter") || "all"; }catch(_){}
+applyFilter(saved);
+if(location.hash){ const el=document.getElementById(location.hash.slice(1)); if(el){ applyFilter("all"); el.scrollIntoView(); } }
+</script>
+</body>
+</html>

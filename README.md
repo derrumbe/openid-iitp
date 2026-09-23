@@ -22,9 +22,10 @@ over whether and how to respond.
 | Proposed charter / work item | [`CHARTER.md`](CHARTER.md) |
 | IITP Event Catalog — all candidate events | [`EVENT-CATALOG.md`](EVENT-CATALOG.md) |
 | IITP Event Reference — per-event detail, claims, and examples | [`iitp-event-reference.html`](iitp-event-reference.html) |
+| WISE Event Reference — the same treatment for WISE draft 02 | [`wise-event-reference.html`](wise-event-reference.html) |
 | IITP / WISE profile comparison | [`openid-iitp-wise-comparison.html`](openid-iitp-wise-comparison.html) |
 
-All five documents are published at <https://derrumbe.github.io/openid-iitp/>:
+All six documents are published at <https://derrumbe.github.io/openid-iitp/>:
 
 | Page | Link |
 | --- | --- |
@@ -32,6 +33,7 @@ All five documents are published at <https://derrumbe.github.io/openid-iitp/>:
 | Charter | <https://derrumbe.github.io/openid-iitp/charter.html> |
 | Event catalog | <https://derrumbe.github.io/openid-iitp/event-catalog.html> |
 | Event reference | <https://derrumbe.github.io/openid-iitp/iitp-event-reference.html> |
+| WISE event reference | <https://derrumbe.github.io/openid-iitp/wise-event-reference.html> |
 | IITP / WISE comparison | <https://derrumbe.github.io/openid-iitp/openid-iitp-wise-comparison.html> |
 
 The specification is written in [kramdown-rfc][kr] markdown and rendered with
@@ -48,7 +50,10 @@ IITP and WISE are complementary but do overlap: seven event pairs describe the
 same underlying facts, and the two drafts take different positions on whether a
 Transmitter is an authority or a detector. The
 [IITP / WISE comparison](https://derrumbe.github.io/openid-iitp/openid-iitp-wise-comparison.html)
-sets out where they collide and where each is unique.
+sets out where they collide and where each is unique. The
+[WISE Event Reference](https://derrumbe.github.io/openid-iitp/wise-event-reference.html)
+details all 20 WISE draft 02 events in the same format as the IITP Event
+Reference, cross-linked to their IITP counterparts.
 
 | | Repository | Published draft |
 | --- | --- | --- |
