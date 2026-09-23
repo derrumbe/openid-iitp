@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Every event in the IITP catalog: what triggers it, who sends it, its claims, how Receivers respond, and an example SET.">
+<title>IITP Event Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#F3F5F7; --surface:#FFFFFF; --ink:#16212B; --muted:#56657A; --rule:#D6DDE5;
+  --accent:#0F6B7F; --accent-ink:#FFFFFF; --accent-soft:#E0EEF1;
+  --gap:#8F5A00; --gap-soft:#FBF0DC;
+  --code-bg:#EEF2F5; --code-key:#0F6B7F; --code-str:#3F6B1F; --code-num:#8F3F71; --code-punct:#7A8797;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans","Arial Narrow",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0F151B; --surface:#151D25; --ink:#E3E9EF; --muted:#93A2B3; --rule:#2A3643;
+    --accent:#5CC2D6; --accent-ink:#0B1A1F; --accent-soft:#16323A;
+    --gap:#E3AB4E; --gap-soft:#33280F;
+    --code-bg:#111920; --code-key:#6FCBDD; --code-str:#A5CF7E; --code-num:#E39BC8; --code-punct:#6D7C8C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F151B; --surface:#151D25; --ink:#E3E9EF; --muted:#93A2B3; --rule:#2A3643;
+  --accent:#5CC2D6; --accent-ink:#0B1A1F; --accent-soft:#16323A;
+  --gap:#E3AB4E; --gap-soft:#33280F;
+  --code-bg:#111920; --code-key:#6FCBDD; --code-str:#A5CF7E; --code-num:#E39BC8; --code-punct:#6D7C8C;
+}
+
+*{box-sizing:border-box}
+:root{color-scheme:light}
+html,body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--ground);color:var(--ink);font:15px/1.6 var(--sans);padding-inline:16px;padding-block:0 64px}
+a{color:var(--accent)}
+code,.mono{font-family:var(--mono);font-size:.88em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+.wrap{max-width:1180px;margin:0 auto}
+header.top{padding-block:48px 28px;border-bottom:1px solid var(--rule);display:grid;gap:14px}
+.eyebrow{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font:700 clamp(30px,5vw,46px)/1.05 var(--cond);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lede{max-width:68ch;margin:0;color:var(--muted);font-size:16px}
+.lede strong{color:var(--ink);font-weight:600}
+.counts{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted)}
+.counts b{font:600 15px var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:48px;padding-top:32px}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr);gap:24px}}
+
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;font-size:13px}
+@media (max-width:880px){nav.toc{position:static;max-height:none;border:1px solid var(--rule);background:var(--surface);border-radius:6px;padding:14px}}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.filters button{font:500 12px var(--sans);border:1px solid var(--rule);background:var(--surface);color:var(--ink);padding:5px 10px;border-radius:999px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.toc h4{margin:14px 0 4px;font:600 11px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+.toc a{display:flex;align-items:center;gap:8px;padding:3px 6px;margin-inline:-6px;border-radius:4px;color:var(--ink);text-decoration:none;font-family:var(--mono);font-size:12.5px}
+.toc a:hover{background:var(--accent-soft)}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;border:1.5px dashed var(--muted)}
+.dot.spec{background:var(--accent);border:1.5px solid var(--accent)}
+
+main{min-width:0}
+section.shared{margin-bottom:48px}
+h2.sect{font:600 22px/1.2 var(--cond);margin:0 0 6px}
+.sect-note{color:var(--muted);margin:0 0 16px;max-width:70ch}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:8px 12px;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:0}
+th{font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--ground)}
+td:first-child{font-family:var(--mono);font-size:12.5px;white-space:nowrap;color:var(--accent)}
+td.req{font:500 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+td.req.r{color:var(--ink)}
+.enum{display:block;margin-top:3px;color:var(--muted);font-size:12.5px}
+.enum code{font-size:11.5px;background:var(--code-bg);padding:1px 4px;border-radius:3px;color:var(--ink)}
+.twocol{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.lifecycle{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13.5px;margin-top:14px}
+.lifecycle span{white-space:nowrap}
+
+.group{margin-top:56px}
+.group-head{border-top:2px solid var(--ink);padding-top:12px;margin-bottom:8px;display:grid;gap:4px}
+.group-head h3{margin:0;font:600 20px/1.2 var(--cond)}
+.group-head p{margin:0;color:var(--muted);max-width:70ch;font-size:14px}
+
+article.ev{padding-block:30px;border-bottom:1px solid var(--rule);display:grid;gap:18px;scroll-margin-top:16px}
+article.ev:last-child{border-bottom:0}
+.ev-head{display:grid;gap:6px}
+.ev-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px}
+.ev-title .num{font:500 13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.ev-title h3{margin:0;font:600 clamp(20px,3vw,25px)/1.2 var(--mono);letter-spacing:-.01em;word-break:break-word}
+.pill{font:600 10.5px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;padding:5px 8px;border-radius:3px;white-space:nowrap}
+.pill.spec{background:var(--accent);color:var(--accent-ink)}
+.pill.prop{border:1px dashed var(--muted);color:var(--muted)}
+.uri{font:12px var(--mono);color:var(--muted);word-break:break-all}
+.summary{font-size:17px;line-height:1.5;margin:0;max-width:62ch;text-wrap:pretty}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.facts div{background:var(--surface);padding:10px 14px}
+.facts dt{font:600 10.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.facts dd{margin:0;font-size:13.5px;line-height:1.45}
+
+.block h4{margin:0 0 8px;font:600 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.block p{margin:0 0 8px;max-width:70ch}
+.block ul{margin:0;padding-left:18px;max-width:70ch;display:grid;gap:3px}
+.caveat{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:8px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{font:500 12px/1 var(--mono);padding:6px 8px;border-radius:4px;background:var(--accent-soft);color:var(--ink);border:1px solid transparent}
+.chip.gap{background:var(--gap-soft);border:1px dashed var(--gap);color:var(--ink)}
+.chip.gap::after{content:" · not in registry";font-family:var(--sans);font-size:10.5px;color:var(--gap)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--muted);margin-top:10px}
+.legend .chip{font-size:11px;padding:3px 6px}
+.legend .chip.gap::after{content:none}
+
+.notes{border-left:3px solid var(--gap);background:var(--gap-soft);padding:10px 14px;border-radius:0 4px 4px 0;font-size:13.5px;max-width:74ch}
+.notes b{color:var(--gap)}
+.notes p{margin:0}
+.notes p+p{margin-top:6px}
+
+details.ex{border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+details.ex summary{cursor:pointer;padding:10px 14px;font:500 13px var(--sans);display:flex;gap:10px;align-items:center;list-style:none}
+details.ex summary::-webkit-details-marker{display:none}
+details.ex summary::before{content:"▸";color:var(--muted);transition:transform .15s}
+details.ex[open] summary::before{transform:rotate(90deg)}
+details.ex summary small{color:var(--muted);font-weight:400}
+pre{margin:0;padding:14px 16px;background:var(--code-bg);overflow-x:auto;font:12.5px/1.55 var(--mono);border-top:1px solid var(--rule);border-radius:0 0 6px 6px;tab-size:2}
+.k{color:var(--code-key)} .s{color:var(--code-str)} .n{color:var(--code-num)} .p{color:var(--code-punct)}
+
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);color:var(--muted);font-size:12.5px;max-width:80ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">OpenID Shared Signals · IITP 1.0 draft 01 + Event Catalog</div>
+    <h1>IITP Event Reference</h1>
+    <p class="lede">Every event in the Internet Infrastructure Threat Profile catalog: what triggers it, who sends it, what's in the payload, and what a Receiver can do about it. IITP events describe the state of an <strong>environment</strong>, such as a tenant, cloud account, cluster or workload, rather than a single user or session. They are <strong>detections, not commands</strong>: the Receiver decides whether and how to respond.</p>
+    <div class="counts" id="counts"></div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Events">
+      <div class="filters" role="group" aria-label="Filter by status">
+        <button id="f-all" data-f="all" aria-pressed="true">All</button>
+        <button id="f-spec" data-f="spec" aria-pressed="false">In spec</button>
+        <button id="f-prop" data-f="prop" aria-pressed="false">Proposed</button>
+      </div>
+      <div id="toc"></div>
+    </nav>
+
+    <main>
+      <section class="shared" id="shared">
+        <h2 class="sect">Shared by every event</h2>
+        <p class="sect-note">Each IITP event is a Security Event Token (SET, RFC 8417). The event types live under <code>https://schemas.openid.net/secevent/iitp/event-type/</code>, and every one of them can carry these common claims in addition to its own.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Claim</th><th>Req</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>severity</td><td class="req r">Recommended</td><td>The Transmitter's view of how severe the condition is.<span class="enum"><code>low</code> <code>medium</code> <code>high</code> <code>critical</code></span></td></tr>
+            <tr><td>confidence</td><td class="req">Optional</td><td>How sure the Transmitter is that this isn't a false positive. Receivers SHOULD scale automated, high-impact responses by it.<span class="enum"><code>low</code> <code>medium</code> <code>high</code></span></td></tr>
+            <tr><td>recommended_actions</td><td class="req">Optional</td><td>Actions the Transmitter suggests, as advice only. A Receiver MUST NOT treat these as commands.</td></tr>
+            <tr><td>initiating_entity</td><td class="req">Optional</td><td>What produced the detection.<span class="enum"><code>detector</code> <code>policy</code> <code>admin</code> <code>system</code></span></td></tr>
+            <tr><td>event_timestamp</td><td class="req">Optional</td><td>When the condition was <em>detected</em>. This can be later than when it began.</td></tr>
+            <tr><td>reason_admin / reason_user</td><td class="req">Optional</td><td>Localized messages keyed by BCP 47 language tag, aligned with CAEP. <code>reason_user</code> is usually omitted.</td></tr>
+          </tbody>
+        </table></div>
+
+        <div class="twocol" style="margin-top:24px">
+          <div class="block">
+            <h4>Subjects</h4>
+            <p>Draft 01 adds an <code>environment</code> subject format with <code>environment_type</code> (e.g. <code>cloud-account</code>, <code>tenant</code>, <code>k8s-cluster</code>), <code>id</code>, and optional <code>provider</code> and <code>domain</code>. The SSF <code>complex</code> format can pair an environment with a specific workload or resource inside it.</p>
+          </div>
+          <div class="block">
+            <h4>Clearing the condition</h4>
+            <p>Transmitters SHOULD send a follow-up event when the condition ends, so Receivers can lift whatever restrictions they applied.</p>
+            <div class="lifecycle">
+              <span><code>drift_status: reverted</code></span>
+              <span><code>attack_status: resolved</code></span>
+              <span><code>trust_status: restored</code></span>
+            </div>
+          </div>
+        </div>
+        <div class="legend">
+          <span><span class="dot spec" style="display:inline-block"></span>&nbsp; In spec (draft 01)</span>
+          <span><span class="dot" style="display:inline-block"></span>&nbsp; Proposed (catalog only)</span>
+          <span><span class="chip">value</span> in <code>recommended_actions</code> registry</span>
+          <span><span class="chip gap">value</span> response not yet in the registry (suggested name)</span>
+        </div>
+      </section>
+
+      <div id="events"></div>
+
+      <footer>
+        Built from the <a href="index.html">IITP 1.0 specification</a> (draft 01) and the <a href="event-catalog.html">IITP Event Catalog</a> (discussion draft, 28 June 2026). See also the <a href="openid-iitp-wise-comparison.html">IITP / WISE comparison</a>. Events marked <em>In spec</em> reproduce the draft's normative claims and examples. For <em>Proposed</em> events, claim names come from the catalog. Their types, value sets, example payloads and suggested action names are illustrative and not yet specified anywhere. This is an independent working draft, not a publication of the OpenID Foundation.
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script>
+const BASE = "https://schemas.openid.net/secevent/iitp/event-type/";
+
+const GROUPS = [
+  {id:"posture", name:"Cloud & Environment Posture", blurb:"Control-plane posture: the environment's configuration or protective coverage is weaker than it should be, before anyone has necessarily exploited it."},
+  {id:"threat", name:"Active Threat — App & Tenant", blurb:"Ongoing campaigns against an application or tenant. Lateral movement links this group to the workload group."},
+  {id:"workload", name:"Workload & Supply Chain", blurb:"Trust in deployed code. Anomalous behavior is a deliberately low-confidence tier that can escalate into a confirmed workload compromise."},
+  {id:"trust", name:"Trust & Identity Infrastructure", blurb:"Issuers, signing keys, trust anchors and non-human secrets: the trust gap that CAEP and RISC do not cover."},
+  {id:"coord", name:"Response Coordination & Lifecycle", blurb:"Coordination and inventory hygiene rather than threat detection: what was done about a threat, and what exists in the estate."}
+];
+
+function set(iss, aud, txn, sub, type, body){
+  return {iss, jti:"…", iat:1782710000, aud, txn, sub_id:sub, events:{[BASE+type]:body}};
+}
+const envSub = (t,id,extra={}) => ({format:"environment", environment_type:t, ...extra, id});
+
+const EVENTS = [
+/* ---------- 1 ---------- */
+{n:1, g:"posture", name:"configuration-drift", spec:true,
+ summary:"The security-relevant configuration of an environment, or of a resource in it, has moved away from a known-good baseline in a way that materially changes risk.",
+ facts:{sender:"CIEM or CSPM product, which is not necessarily authoritative over the resource", receiver:"Identity Provider, Policy Decision Point", subject:"<code>environment</code> (e.g. cloud-account), with the drifted resource named in <code>resource</code>", clears:"<code>drift_status: reverted</code>"},
+ causes:"The canonical case is a <em>privilege explosion</em>: a role such as an S3 bucket admin is edited to include powerful unrelated privileges (for example EKS cluster-admin), so every holder of that role now has far broader access than intended.",
+ triggers:["An IAM role, identity or policy gains privileges (<code>privilege-escalation</code>)","A guardrail or SCP is weakened or removed (<code>policy-change</code>)","A bucket or resource is made public (<code>resource-exposure</code>)","A security group is opened (<code>network-exposure</code>)","Encryption is disabled or downgraded (<code>encryption-change</code>)","Audit logging or monitoring is turned off (<code>logging-disabled</code>)"],
+ claims:[
+  ["drift_type","R","Category of drift.",["privilege-escalation","policy-change","resource-exposure","network-exposure","encryption-change","logging-disabled"]],
+  ["resource","R","The configuration item that drifted. Must include <code>type</code> (e.g. <code>iam-role</code>, <code>storage-bucket</code>) and <code>id</code> (e.g. an ARN). May include <code>provider</code>, <code>region</code>, <code>account</code>."],
+  ["added_privileges","O","Privileges newly granted by the drift, i.e. the “poisoning” set."],
+  ["removed_privileges","O","Privileges or controls removed by the drift."],
+  ["affected_principals","O","Who is affected, so Receivers can scope enforcement: <code>count</code> and a mutually understood <code>selector</code> (e.g. <code>role:s3-bucket-admin</code>)."],
+  ["baseline_ref","O","Opaque reference to the known-good baseline. Used to correlate the later “reverted” event."],
+  ["drift_status","O","Lifecycle of the drift. Defaults to <code>detected</code>.",["detected","persisting","reverted"]]
+ ],
+ actions:[["restrict-role-holders",1],["freeze-non-admin-access",1]],
+ response:"Restrict anyone holding the poisoned role, or freeze all non-admin access to the environment, until a <code>reverted</code> follow-up arrives. Per-user enforcement goes out as CAEP events (e.g. <code>session-revoked</code>).",
+ example:set("https://ciem.example.com/","https://idp.example.com/ssf","drift-2026-0001",envSub("cloud-account","123456789012",{provider:"aws"}),"configuration-drift",{
+  drift_type:"privilege-escalation",
+  resource:{type:"iam-role",provider:"aws",account:"123456789012",region:"us-east-1",id:"arn:aws:iam::123456789012:role/s3-bucket-admin"},
+  added_privileges:["eks:*","eks:AccessKubernetesApi"],
+  affected_principals:{selector:"role:s3-bucket-admin",count:14},
+  baseline_ref:"baseline-2026-06-01T00:00:00Z",
+  drift_status:"detected", severity:"high", confidence:"high", initiating_entity:"detector",
+  recommended_actions:["restrict-role-holders","freeze-non-admin-access"],
+  reason_admin:{en:"Role s3-bucket-admin modified to include EKS cluster-admin privileges; treat role as poisoned until reverted."},
+  event_timestamp:1782691180})
+},
+/* ---------- 2 ---------- */
+{n:2, g:"posture", name:"security-control-degraded", spec:false,
+ summary:"A protective control that the environment relies on is down or degraded, so part of the environment is less protected than usual.",
+ facts:{sender:"EDR or XDR console, WAF, SIEM pipeline health monitoring", receiver:"Identity Provider, Policy Decision Point, integrated apps", subject:"<code>environment</code>", clears:"<code>control_status</code> returning to normal (value not yet defined)"},
+ causes:"Nothing is necessarily under attack, but a control that the rest of the security stack assumes is working has stopped working. Other parties should tighten their own policy until coverage comes back.",
+ triggers:["EDR agents go offline across a fleet or segment","A WAF is switched from blocking to monitor-only","Audit or security log ingestion starts dropping events","An MFA or risk engine dependency is unavailable"],
+ claims:[["control_type","—","Which control is affected (e.g. EDR, WAF, logging)."],["control_status","—","Its current state, e.g. degraded, offline, or restored."],["coverage_gap","—","What is no longer covered: which hosts, apps or share of the estate."]],
+ actions:[["require-step-up-auth",1],["elevate-detection",1]],
+ response:"Compensate with stricter access policy for the uncovered scope until coverage returns.",
+ notes:["<b>Boundary to settle:</b> <code>configuration-drift</code> already has <code>logging-disabled</code>. One possible split: drift means the configuration was changed, and this event means the control failed operationally."],
+ example:set("https://xdr.example.com/","https://idp.example.com/ssf","ctrl-311",envSub("org-unit","emea-endpoints"),"security-control-degraded",{
+  control_type:"edr", control_status:"offline", coverage_gap:{hosts_uncovered:412,percent:37},
+  severity:"high", confidence:"high", initiating_entity:"system",
+  recommended_actions:["require-step-up-auth","elevate-detection"],
+  reason_admin:{en:"EDR sensor offline for 37% of EMEA endpoints after failed agent update."}})
+},
+/* ---------- 3 ---------- */
+{n:3, g:"posture", name:"critical-vulnerability-exposed", spec:false,
+ summary:"A critical vulnerability that is being actively exploited is present in the environment and reachable by an attacker.",
+ facts:{sender:"Vulnerability scanner, attack-surface management, CSPM", receiver:"WAF or edge, Policy Decision Point, service mesh", subject:"<code>environment</code> or a workload", clears:"Status showing the vulnerability has been remediated (value not yet defined)"},
+ causes:"Exploitability plus exposure, not just presence. A CVE on a known-exploited list that sits on an internet-facing component is the case worth broadcasting. An unreachable, unexploited finding is ordinary vulnerability-management backlog.",
+ triggers:["A known-exploited CVE is found on an internet-facing host or service","A public proof-of-concept drops for a component already deployed","A newly opened path makes a vulnerable internal service reachable"],
+ claims:[["vulnerability_id","—","Identifier, e.g. a CVE ID."],["exploit_status","—","Whether it is exploitable or being exploited, e.g. PoC available or exploited in the wild."],["exposure","—","How reachable it is, e.g. internet-facing or internal only."],["affected_components","—","Hosts, images or services that carry it."]],
+ actions:[["quarantine",1],["virtual-patch",0],["restrict-exposure",0]],
+ response:"Virtual-patch at the edge, restrict exposure, and prioritize remediation.",
+ notes:["<b>Overlaps WISE:</b> WISE covers workload posture and vulnerability state. See the IITP / WISE comparison."],
+ example:set("https://asm.example.com/","https://edge.example.com/ssf","vuln-9921",envSub("cloud-account","123456789012",{provider:"aws"}),"critical-vulnerability-exposed",{
+  vulnerability_id:"CVE-2026-12345", exploit_status:"exploited-in-wild", exposure:"internet",
+  affected_components:[{type:"image",id:"registry.example.com/gateway:3.1.0"}],
+  severity:"critical", confidence:"high", initiating_entity:"detector",
+  recommended_actions:["quarantine"]})
+},
+/* ---------- 4 ---------- */
+{n:4, g:"threat", name:"asset-under-attack", spec:true,
+ summary:"An application instance, tenant, domain or organization is the target of an active attack campaign, as a whole rather than one user at a time.",
+ facts:{sender:"The application under attack, using its own threat detection","receiver":"Other SaaS apps and IdPs connected to the same organization", subject:"<code>environment</code> (tenant, domain)", clears:"<code>attack_status: contained</code> or <code>resolved</code>"},
+ causes:"The target sends a warning to its neighbors. Examples are a password spray against a Salesforce tenant, or a profiled adversary such as ShinyHunters detected inside it. Connected apps like ServiceNow raise their guard before any account on their side is known to be compromised, which limits the blast radius.",
+ triggers:["Password spray, credential stuffing or brute force against a tenant","MFA-fatigue or account-takeover campaigns","API abuse or reconnaissance","A named or profiled adversary operating in the tenant (<code>adversary-presence</code>)"],
+ claims:[
+  ["attack_type","R","Category of attack.",["password-spray","credential-stuffing","brute-force","account-takeover","mfa-fatigue","data-exfiltration","api-abuse","reconnaissance","adversary-presence"]],
+  ["attack_status","R","Lifecycle state.",["suspected","active","contained","resolved"]],
+  ["scope","Rec","Granularity for the response.",["tenant","domain","application","organization"]],
+  ["threat_actor","O","Attribution: <code>name</code>, <code>attribution_confidence</code>, and a threat-intel <code>reference</code> URI."],
+  ["indicators","O","IoCs a Receiver can tune its detection with. Each is a <code>{type, value}</code>, where type is <code>ip</code>, <code>asn</code>, <code>user-agent</code>, <code>domain</code>, and so on."],
+  ["recommended_posture","O","Coarse advice on detection sensitivity, separate from recommended_actions.",["normal","heightened","maximum"]]
+ ],
+ actions:[["elevate-detection",1],["require-step-up-auth",1],["restrict-cross-app-access",1]],
+ response:"Raise detection sensitivity, require step-up auth, and tighten or suspend cross-app access tied to the tenant or domain.",
+ example:set("https://salesforce.example.com/","https://servicenow.example.com/ssf","attack-tenant-77",envSub("tenant","00D5e000000ABCdEAU",{domain:"example.com"}),"asset-under-attack",{
+  attack_type:"password-spray", attack_status:"active", scope:"tenant",
+  severity:"high", confidence:"high", recommended_posture:"heightened",
+  indicators:[{type:"asn",value:"AS14061"},{type:"user-agent",value:"python-requests/2.31"}],
+  recommended_actions:["elevate-detection","require-step-up-auth"],
+  initiating_entity:"detector",
+  reason_admin:{en:"High-volume password spray observed against tenant; integrated apps should raise detection sensitivity."},
+  event_timestamp:1782699940})
+},
+/* ---------- 5 ---------- */
+{n:5, g:"threat", name:"data-exfiltration", spec:false,
+ summary:"Bulk or anomalous data is leaving a tenant or environment.",
+ facts:{sender:"DLP, CASB, network or egress monitoring, the SaaS app itself", receiver:"Egress proxies, DLP, connected apps, IdP", subject:"<code>environment</code> (tenant)", clears:"<code>exfil_status</code> showing it has stopped (value not yet defined)"},
+ causes:"Data leaving at a volume, rate or destination that doesn't match normal use, seen at the tenant or environment level rather than tied to one known-bad user.",
+ triggers:["Mass export or API pull of records from a SaaS tenant","Large transfers to an unfamiliar cloud-storage destination","Sensitive-labelled data moving across the boundary in bulk"],
+ claims:[["data_classification","—","Sensitivity of the data involved."],["volume","—","How much data, and over what period."],["destination","—","Where it's going: domain, IP, ASN or storage account."],["exfil_status","—","Whether it's ongoing, stopped, and so on."]],
+ actions:[["elevate-detection",1],["block-egress",0],["snapshot-for-forensics",0]],
+ response:"Throttle or block egress, snapshot the environment for forensics, and raise DLP sensitivity.",
+ notes:["<b>Overlap inside IITP:</b> <code>asset-under-attack</code> already lists <code>data-exfiltration</code> as an <code>attack_type</code>. The drafts need to say when a Transmitter should use which."],
+ example:set("https://casb.example.com/","https://proxy.example.com/ssf","exfil-58",envSub("tenant","00D5e000000ABCdEAU",{domain:"example.com"}),"data-exfiltration",{
+  data_classification:"confidential", volume:{bytes:48000000000,window_seconds:3600},
+  destination:{type:"domain",value:"files.unknown-share.example"}, exfil_status:"ongoing",
+  severity:"critical", confidence:"medium", initiating_entity:"detector",
+  recommended_actions:["elevate-detection"]})
+},
+/* ---------- 6 ---------- */
+{n:6, g:"threat", name:"lateral-movement", spec:false,
+ summary:"An adversary is moving between workloads, accounts or environments.",
+ facts:{sender:"EDR, NDR or identity threat detection", receiver:"Service mesh, firewall or segmentation controller, IdP", subject:"Source plus target, likely a <code>complex</code> subject", clears:"Not yet defined"},
+ causes:"The threat is no longer in one place. What matters is the path it is taking, because containment happens along that path.",
+ triggers:["A workload credential is reused from an unexpected workload","East-west traffic appears between segments that never talk","A cross-account role is assumed from a compromised account"],
+ claims:[["source","—","Where the movement started."],["target","—","Where it went."],["technique","—","How, e.g. a MITRE ATT&CK technique ID."],["path","—","The observed hop sequence."]],
+ actions:[["quarantine",1],["segment-network",0],["restrict-east-west",0]],
+ response:"Segment the network, tighten east-west policy, and isolate along the observed path.",
+ example:set("https://ndr.example.com/","https://mesh.example.com/ssf","lm-204",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"billing-worker@prod"}},"lateral-movement",{
+  source:{workload:"billing-worker@prod"}, target:{workload:"payments-db@prod"},
+  technique:"T1021", path:["billing-worker@prod","ledger-api@prod","payments-db@prod"],
+  severity:"high", confidence:"medium", initiating_entity:"detector",
+  recommended_actions:["quarantine"]})
+},
+/* ---------- 7 ---------- */
+{n:7, g:"workload", name:"workload-compromise", spec:true,
+ summary:"A deployed application, service, container or function is believed compromised and should no longer be trusted.",
+ facts:{sender:"Workload runtime security, supply-chain or SBOM scanning", receiver:"Service mesh, workload identity issuer, OAuth AS, agent platforms", subject:"<code>complex</code>: environment (cluster) plus workload", clears:"<code>trust_status: restored</code>, after a clean redeploy"},
+ causes:"The motivating case is a supply-chain attack on a homegrown app running in Kubernetes: a poisoned dependency or build artifact leaves a running app actively compromised. Everything that talks to it should withdraw trust.",
+ triggers:["A compromised dependency or third-party component (<code>supply-chain</code>)","A compromised CI/CD process (<code>build-pipeline</code>)","A known-bad image or package deployed (<code>malicious-artifact</code>)","Compromise observed at runtime (<code>runtime-compromise</code>)","The workload's secrets or identity material exposed (<code>secret-exposure</code>)"],
+ claims:[
+  ["compromise_type","R","Nature of the compromise.",["supply-chain","build-pipeline","malicious-artifact","runtime-compromise","secret-exposure"]],
+  ["trust_status","R","How much trust to place in the workload now.",["untrusted","quarantined","restored"]],
+  ["workload","R","As precise as possible: <code>name</code>, <code>namespace</code>, <code>cluster</code>, <code>image</code>, <code>image_digest</code>, <code>service_account</code>, <code>spiffe_id</code>."],
+  ["affected_component","O","The culprit, e.g. the poisoned package: <code>type</code>, <code>name</code>, <code>version</code>."],
+  ["indicators","O","IoCs, same shape as in <code>asset-under-attack</code>."]
+ ],
+ actions:[["revoke-workload-identity",1],["block-service-account-traffic",1],["block-agent-communication",1],["quarantine",1]],
+ response:"Revoke the workload's identity, block OAuth and service-to-service traffic for its service account, and stop agents from talking to it.",
+ notes:["<b>Overlaps WISE:</b> WISE models workload identity lifecycle and trust directly, with the Transmitter acting as an <em>authority</em> rather than a detector. This is the sharpest collision point between the two drafts."],
+ example:set("https://runtime-sec.example.com/","https://mesh.example.com/ssf","wl-compromise-42",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"workload-compromise",{
+  compromise_type:"supply-chain", trust_status:"untrusted",
+  workload:{name:"payments-api",namespace:"prod",cluster:"prod-cluster-eu-1",image:"registry.example.com/payments-api:1.8.3",image_digest:"sha256:5e0c...a91f",service_account:"payments-api-sa",spiffe_id:"spiffe://example.com/ns/prod/sa/payments-api-sa"},
+  affected_component:{type:"package",name:"left-pad-utils",version:"4.2.0"},
+  severity:"critical", confidence:"high", initiating_entity:"detector",
+  recommended_actions:["revoke-workload-identity","block-service-account-traffic","block-agent-communication"],
+  reason_admin:{en:"Supply-chain compromise via poisoned dependency left-pad-utils@4.2.0; do not trust payments-api service account."},
+  event_timestamp:1782709950})
+},
+/* ---------- 8 ---------- */
+{n:8, g:"workload", name:"anomalous-workload-behavior", spec:false,
+ summary:"A workload is behaving unusually at runtime, but compromise has not been confirmed.",
+ facts:{sender:"Workload runtime security, eBPF sensors, service-mesh telemetry", receiver:"Service mesh, SOC tooling", subject:"Workload", clears:"Not yet defined. It either escalates to #7 or quietly ends"},
+ causes:"A low-confidence tier added on purpose. It gives Receivers a chance to watch or partly contain a workload before a confirmed <code>workload-compromise</code>, and can escalate into one.",
+ triggers:["An unexpected process or shell spawns in a container","New outbound destinations or ports appear","Syscall or API-call patterns drift from the learned baseline"],
+ claims:[["behavior_type","—","Kind of anomaly, e.g. process, network or file access."],["baseline_deviation","—","How far from normal."],["workload","—","The workload, likely the same shape as in #7."],["confidence","—","Called out explicitly here, because low confidence is what defines this event."]],
+ actions:[["monitor",1],["quarantine",1],["elevate-detection",1]],
+ response:"Watch closely. Quarantine pending review if the Receiver's policy allows it, and raise detection.",
+ notes:["<b>Overlaps WISE:</b> it maps to WISE workload posture and behavior events."],
+ example:set("https://runtime-sec.example.com/","https://mesh.example.com/ssf","wl-anom-17",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"anomalous-workload-behavior",{
+  behavior_type:"unexpected-egress", baseline_deviation:"new destination 203.0.113.50:4444 never seen in 30d baseline",
+  workload:{name:"payments-api",namespace:"prod",service_account:"payments-api-sa"},
+  severity:"medium", confidence:"low", initiating_entity:"detector",
+  recommended_actions:["monitor","elevate-detection"]})
+},
+/* ---------- 9 ---------- */
+{n:9, g:"trust", name:"federation-trust-compromise", spec:false,
+ summary:"An identity provider, a federation link or a token-signing key is compromised, so assertions from that issuer can no longer be trusted.",
+ facts:{sender:"ITDR, IdP security monitoring, threat intel", receiver:"Relying parties, SPs, API gateways", subject:"Issuer, federation or signing key", clears:"Not yet defined. Likely a key-rotation or restored-trust follow-up"},
+ causes:"Attacks that forge identity at the source, such as Golden SAML or a stolen signing key. Every per-user signal downstream becomes untrustworthy at once, so the fix has to happen at the issuer level.",
+ triggers:["A token-signing certificate or private key is exfiltrated (Golden SAML)","An unauthorized federation trust or IdP is added to a tenant","Forged tokens validate against a legitimate key"],
+ claims:[["trust_object","—","What is compromised: issuer, federation link or signing key."],["affected_issuer","—","The issuer whose assertions are suspect."],["compromise_vector","—","How it was compromised."],["valid_from","—","The point in time from which that issuer's assertions should be distrusted."]],
+ actions:[["distrust-issuer",0],["force-global-reauth",0],["rotate-signing-keys",0]],
+ response:"Stop accepting assertions from the issuer, force re-authentication everywhere, and rotate keys.",
+ notes:["<b>Registry gap:</b> none of the likely responses exist in the current <code>recommended_actions</code> registry."],
+ example:set("https://itdr.example.com/","https://sp.example.com/ssf","fed-7",envSub("tenant","contoso.example",{domain:"contoso.example"}),"federation-trust-compromise",{
+  trust_object:{type:"signing-key",kid:"adfs-token-signing-2025"}, affected_issuer:"https://sts.contoso.example/adfs",
+  compromise_vector:"golden-saml", valid_from:1782600000,
+  severity:"critical", confidence:"high", initiating_entity:"detector"})
+},
+/* ---------- 10 ---------- */
+{n:10, g:"trust", name:"secret-exposure", spec:false,
+ summary:"A non-human secret, such as a service key, API token or certificate, has been exposed or leaked.",
+ facts:{sender:"Secret scanning in repos or logs, leak monitoring", receiver:"Token issuer, secrets manager, API gateway", subject:"Resource or workload", clears:"Not yet defined. Likely a “rotated” status"},
+ causes:"A credential that belongs to a machine rather than a person has leaked. CAEP and RISC have nothing to say about it because no human account is involved.",
+ triggers:["A cloud access key is committed to a public repository","An API token appears in application logs or a paste site","A private key is baked into a published container image"],
+ claims:[["secret_type","—","What kind of secret: access key, API token, certificate, and so on."],["exposure_location","—","Where it was found."],["affected_resource","—","What the secret grants access to."],["rotation_required","—","Whether rotation is required."]],
+ actions:[["revoke-workload-identity",1],["revoke-derived-tokens",0],["rotate-secret",0]],
+ response:"Revoke any tokens minted from the secret, force rotation, and block the identity it belongs to.",
+ notes:["<b>Overlap inside IITP:</b> <code>workload-compromise</code> already has <code>compromise_type: secret-exposure</code>.","<b>Overlaps WISE:</b> WISE covers credential compromise and rotation for workloads."],
+ example:set("https://secrets-scan.example.com/","https://iam.example.com/ssf","secret-88",envSub("cloud-account","123456789012",{provider:"aws"}),"secret-exposure",{
+  secret_type:"cloud-access-key", exposure_location:{type:"public-repo",url:"https://git.example.com/acme/tools/blob/main/.env"},
+  affected_resource:{type:"iam-user",id:"arn:aws:iam::123456789012:user/ci-deployer"}, rotation_required:true,
+  severity:"high", confidence:"high", initiating_entity:"detector",
+  recommended_actions:["revoke-workload-identity"]})
+},
+/* ---------- 11 ---------- */
+{n:11, g:"trust", name:"trust-anchor-change", spec:false,
+ summary:"A CA, trust-store entry or pinned key has been added, removed or changed.",
+ facts:{sender:"Configuration monitoring, PKI tooling, endpoint management", receiver:"TLS terminators, service mesh, relying parties", subject:"<code>environment</code>", clears:"Not yet defined"},
+ causes:"Changing what an environment trusts is a quiet way to enable interception or forged identities. The <code>expected</code> claim separates a planned rotation from something to worry about.",
+ triggers:["A new root CA is installed into a fleet's trust store","A SPIFFE trust bundle changes outside a change window","A pinned key is replaced"],
+ claims:[["anchor_type","—","CA, trust bundle or pinned key."],["change_type","—","Added, removed or modified."],["fingerprint","—","Identifies the anchor."],["expected","—","Whether the change was planned or authorized."]],
+ actions:[["distrust-anchor",0],["re-pin",0]],
+ response:"Distrust certificates that chain to the new anchor, re-pin, and alert.",
+ notes:["<b>Overlaps WISE:</b> WISE has trust-anchor events for WIMSE and SPIFFE trust domains."],
+ example:set("https://pki-watch.example.com/","https://mesh.example.com/ssf","anchor-3",envSub("k8s-cluster","prod-cluster-eu-1"),"trust-anchor-change",{
+  anchor_type:"root-ca", change_type:"added", fingerprint:"sha256:9f86d0…0f00a08", expected:false,
+  severity:"high", confidence:"high", initiating_entity:"detector"})
+},
+/* ---------- 12 ---------- */
+{n:12, g:"coord", name:"containment-status-change", spec:false,
+ summary:"Something has been isolated, quarantined or released. This is the “action taken” signal.",
+ facts:{sender:"SOAR, EDR, or the Receiver of an earlier IITP event", receiver:"Every other party acting on the same incident", subject:"<code>environment</code> or workload", clears:"The event itself records the state change (isolate, then release)"},
+ causes:"Several parties responding to one incident need to know what the others have already done, so they don't act twice or lift restrictions too early.",
+ triggers:["A SOAR playbook isolates a host or workload","A quarantined workload is released after remediation","An admin manually contains a tenant"],
+ claims:[["containment_action","—","What was done: isolated, quarantined, released, and so on."],["scope","—","What it applied to."],["initiated_by","—","Who or what took the action."]],
+ actions:[],
+ response:"Keep local state in sync. No enforcement is implied; the purpose is coordination.",
+ example:set("https://soar.example.com/","https://mesh.example.com/ssf","wl-compromise-42",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"containment-status-change",{
+  containment_action:"quarantined", scope:{workload:"payments-api@prod"}, initiated_by:"soar-playbook:wl-isolate",
+  severity:"low", initiating_entity:"system"})
+},
+/* ---------- 13 ---------- */
+{n:13, g:"coord", name:"environment-lifecycle-change", spec:false,
+ summary:"An environment was created, cloned, suspended or decommissioned.",
+ facts:{sender:"Cloud org management, SaaS admin audit, IaC pipelines", receiver:"Asset inventory, CIEM, IdP", subject:"<code>environment</code>", clears:"n/a, since it's a point-in-time fact"},
+ causes:"Inventory hygiene. An environment that appears unexpectedly, such as a shadow tenant or a rogue cloud account, is often the first sign of trouble, and a decommissioned one should stop receiving trust.",
+ triggers:["A new cloud account is created in the organization","A tenant is cloned into a sandbox","An environment is suspended or torn down"],
+ claims:[["lifecycle_event","—","Created, cloned, suspended or decommissioned."],["expected","—","Whether it was planned."],["parent","—","The org, tenant or environment it belongs to or was cloned from."]],
+ actions:[["monitor",1],["update-inventory",0]],
+ response:"Update inventory, and flag the creation for review if it wasn't expected.",
+ example:set("https://cloud-org.example.com/","https://ciem.example.com/ssf","life-12",envSub("cloud-account","998877665544",{provider:"aws"}),"environment-lifecycle-change",{
+  lifecycle_event:"created", expected:false, parent:{type:"org",id:"o-a1b2c3d4"},
+  severity:"medium", initiating_entity:"system", recommended_actions:["monitor"]})
+}
+];
+
+/* ---------- rendering ---------- */
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function highlight(obj){
+  const json = esc(JSON.stringify(obj,null,2));
+  return json.replace(/(&quot;|")((?:\\.|[^"\\])*?)"(\s*:)?|\b(-?\d+(?:\.\d+)?)\b|\b(true|false|null)\b|([{}\[\],])/g,
+    (m,q,str,colon,num,bool,punct)=>{
+      if(str!==undefined) return colon ? `<span class="k">"${str}"</span><span class="p">:</span>` : `<span class="s">"${str}"</span>`;
+      if(num!==undefined) return `<span class="n">${num}</span>`;
+      if(bool!==undefined) return `<span class="n">${bool}</span>`;
+      return `<span class="p">${punct}</span>`;
+    });
+}
+const REQ = {R:["Required","r"],Rec:["Recommended","r"],O:["Optional",""],"—":["Not specified",""]};
+
+function renderEvent(e){
+  const pill = e.spec ? `<span class="pill spec">In spec</span>` : `<span class="pill prop">Proposed</span>`;
+  const claimRows = e.claims.map(([c,r,m,en])=>{
+    const [rl,rc]=REQ[r];
+    const enumH = en ? `<span class="enum">${en.map(v=>`<code>${v}</code>`).join(" ")}</span>` : "";
+    return `<tr><td>${c}</td><td class="req ${rc}">${rl}</td><td>${m}${enumH}</td></tr>`;
+  }).join("");
+  const chips = e.actions.length
+    ? `<div class="chips">${e.actions.map(([a,reg])=>`<span class="chip${reg?"":" gap"}">${a}</span>`).join("")}</div>` : "";
+  const notes = e.notes ? `<div class="notes">${e.notes.map(n=>`<p>${n}</p>`).join("")}</div>` : "";
+  return `<article class="ev" id="${e.name}" data-status="${e.spec?"spec":"prop"}">
+    <div class="ev-head">
+      <div class="ev-title"><span class="num">#${e.n}</span><h3>${e.name}</h3>${pill}</div>
+      <div class="uri">${BASE}${e.name}</div>
+    </div>
+    <p class="summary">${e.summary}</p>
+    <dl class="facts">
+      <div><dt>Sent by</dt><dd>${e.facts.sender}</dd></div>
+      <div><dt>Acted on by</dt><dd>${e.facts.receiver}</dd></div>
+      <div><dt>Subject</dt><dd>${e.facts.subject}</dd></div>
+      <div><dt>Cleared by</dt><dd>${e.facts.clears}</dd></div>
+    </dl>
+    <div class="block"><h4>What causes it</h4><p>${e.causes}</p><ul>${e.triggers.map(t=>`<li>${t}</li>`).join("")}</ul></div>
+    <div class="block"><h4>What it sends</h4>
+      <div class="tbl-wrap"><table><thead><tr><th>Claim</th><th>Req</th><th>Meaning</th></tr></thead><tbody>${claimRows}</tbody></table></div>
+      ${e.spec ? "" : `<p class="caveat">Claim names come from the Event Catalog. Types, requirement levels and value sets are not yet specified.</p>`}
+    </div>
+    <div class="block"><h4>What a Receiver can do</h4>${chips}<p>${e.response}</p></div>
+    ${notes}
+    <details class="ex" id="ex-${e.name}">
+      <summary>Example SET <small>${e.spec ? "from draft 01 (non-normative)" : "illustrative only, not in the draft"}</small></summary>
+      <pre><code>${highlight(e.example)}</code></pre>
+    </details>
+  </article>`;
+}
+
+document.getElementById("events").innerHTML = GROUPS.map(g=>{
+  const evs = EVENTS.filter(e=>e.g===g.id);
+  return `<section class="group" data-group="${g.id}">
+    <div class="group-head"><div class="eyebrow">Group ${GROUPS.indexOf(g)+1}</div><h3>${g.name}</h3><p>${g.blurb}</p></div>
+    ${evs.map(renderEvent).join("")}
+  </section>`;
+}).join("");
+
+document.getElementById("toc").innerHTML = `<h4 style="margin-top:0">Overview</h4><ol><li><a href="#shared" style="font-family:var(--sans)">Shared claims &amp; subjects</a></li></ol>` +
+  GROUPS.map(g=>`<div data-group="${g.id}"><h4>${g.name}</h4><ol>${EVENTS.filter(e=>e.g===g.id).map(e=>
+    `<li data-status="${e.spec?"spec":"prop"}"><a href="#${e.name}"><span class="dot${e.spec?" spec":""}"></span>${e.name}</a></li>`).join("")}</ol></div>`).join("");
+
+const nSpec = EVENTS.filter(e=>e.spec).length;
+const gaps = new Set(EVENTS.flatMap(e=>e.actions.filter(a=>!a[1]).map(a=>a[0])));
+document.getElementById("counts").innerHTML =
+  `<span><b>${EVENTS.length}</b> events</span><span><b>${nSpec}</b> in spec</span><span><b>${EVENTS.length-nSpec}</b> proposed</span><span><b>${GROUPS.length}</b> groups</span><span><b>${gaps.size}</b> responses missing from the actions registry</span>`;
+
+/* filter */
+function applyFilter(f){
+  document.querySelectorAll(".filters button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.f===f)));
+  document.querySelectorAll("[data-status]").forEach(el=>{ el.hidden = f!=="all" && el.dataset.status!==f; });
+  document.querySelectorAll("[data-group]").forEach(el=>{
+    el.hidden = ![...el.querySelectorAll("[data-status]")].some(x=>!x.hidden);
+  });
+  try{ localStorage.setItem("iitp-filter", f); }catch(_){}
+}
+document.querySelectorAll(".filters button").forEach(b=>b.addEventListener("click",()=>applyFilter(b.dataset.f)));
+let saved="all"; try{ saved = localStorage.getItem("iitp-filter") || "all"; }catch(_){}
+applyFilter(saved);
+
+/* open an example when deep-linked to an event */
+if(location.hash){ const el=document.getElementById(location.hash.slice(1)); if(el) el.scrollIntoView(); }
+</script>
+</body>
+</html>

@@ -21,15 +21,17 @@ over whether and how to respond.
 | OpenID Internet Infrastructure Threat Profile 1.0 — draft 01 | [`openid-iitp-1_0.md`](openid-iitp-1_0.md) |
 | Proposed charter / work item | [`CHARTER.md`](CHARTER.md) |
 | IITP Event Catalog — all candidate events | [`EVENT-CATALOG.md`](EVENT-CATALOG.md) |
+| IITP Event Reference — per-event detail, claims, and examples | [`iitp-event-reference.html`](iitp-event-reference.html) |
 | IITP / WISE profile comparison | [`openid-iitp-wise-comparison.html`](openid-iitp-wise-comparison.html) |
 
-All four documents are published at <https://derrumbe.github.io/openid-iitp/>:
+All five documents are published at <https://derrumbe.github.io/openid-iitp/>:
 
 | Page | Link |
 | --- | --- |
 | Specification | <https://derrumbe.github.io/openid-iitp/> |
 | Charter | <https://derrumbe.github.io/openid-iitp/charter.html> |
 | Event catalog | <https://derrumbe.github.io/openid-iitp/event-catalog.html> |
+| Event reference | <https://derrumbe.github.io/openid-iitp/iitp-event-reference.html> |
 | IITP / WISE comparison | <https://derrumbe.github.io/openid-iitp/openid-iitp-wise-comparison.html> |
 
 The specification is written in [kramdown-rfc][kr] markdown and rendered with
@@ -64,7 +66,10 @@ Three event types are specified in draft 01:
 | `workload-compromise` | A deployed workload is compromised or supply-chain poisoned |
 
 Further candidate events are tracked in the IITP Event Catalog and are not yet
-specified here.
+specified here. The
+[IITP Event Reference](https://derrumbe.github.io/openid-iitp/iitp-event-reference.html)
+details every event — specified and proposed — with its triggers, claims,
+Receiver responses, and an example SET.
 
 ## Building
 

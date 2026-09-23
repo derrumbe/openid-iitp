@@ -41,6 +41,7 @@ publish: $(BUILD)/$(MAIN).html
 	python3 tools/render-md.py CHARTER.md $(PUBLIC)/charter.html "IITP Proposed Charter"
 	python3 tools/render-md.py EVENT-CATALOG.md $(PUBLIC)/event-catalog.html "IITP Event Catalog"
 	cp openid-iitp-wise-comparison.html $(PUBLIC)/
+	cp iitp-event-reference.html $(PUBLIC)/
 
 clean:
 	rm -rf $(BUILD) $(PUBLIC)
