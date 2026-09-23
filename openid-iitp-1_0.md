@@ -75,6 +75,10 @@ normative:
     date: 2025
 
 informative:
+  IITP-EVENTS:
+    title: "IITP Event Reference"
+    target: https://derrumbe.github.io/openid-iitp/iitp-event-reference.html
+    date: 2026
   SPIFFE:
     title: "Secure Production Identity Framework for Everyone (SPIFFE)"
     target: https://spiffe.io/
@@ -141,6 +145,8 @@ The following example is non-normative.
 The base URI for IITP event types is:
 
 `https://schemas.openid.net/secevent/iitp/event-type/`
+
+This document specifies three event types. Further candidate event types are under discussion and are not specified here. The IITP Event Reference {{IITP-EVENTS}} summarizes both the specified and the candidate event types, with their triggers, claims, Receiver responses, and example SETs.
 
 ## configuration-drift
 
@@ -533,4 +539,4 @@ This document is an independent working draft and is not a publication of the Op
 - Initial working group draft, converted from the 28 June 2026 HTML draft to kramdown-rfc source.
 - Defines the `configuration-drift`, `asset-under-attack`, and `workload-compromise` event types.
 - Defines the `environment` subject format and the `recommended_actions` registry.
-- Additional candidate event types are tracked separately in the IITP Event Catalog and are not yet specified here.
+- Additional candidate event types are tracked separately in the IITP Event Catalog and summarized in the IITP Event Reference {{IITP-EVENTS}}; they are not yet specified here.
