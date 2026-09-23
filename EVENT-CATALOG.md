@@ -14,6 +14,9 @@ follow-up pattern in addition to the key claims listed below.
 
 All event-type URIs use the base `https://schemas.openid.net/secevent/iitp/event-type/`.
 
+For each event's triggers, claims, Receiver responses, and an example SET, see the
+[IITP Event Reference](iitp-event-reference.html).
+
 **Status legend** — **In spec**: already defined in the [IITP 1.0
 draft](openid-iitp-1_0.md) · **Proposed**: candidate for discussion.
 
