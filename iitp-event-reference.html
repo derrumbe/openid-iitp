@@ -213,7 +213,6 @@ const GROUPS = [
   {id:"posture", name:"Cloud & Environment Posture", blurb:"Control-plane posture: the environment's configuration or protective coverage is weaker than it should be, before anyone has necessarily exploited it."},
   {id:"threat", name:"Active Threat — App & Tenant", blurb:"Ongoing campaigns against an application or tenant. Lateral movement links this group to the workload group."},
   {id:"workload", name:"Workload & Supply Chain", blurb:"Trust in deployed code. Anomalous behavior is a deliberately low-confidence tier that can escalate into a confirmed workload compromise."},
-  {id:"trust", name:"Trust & Identity Infrastructure", blurb:"Issuers, signing keys, trust anchors and non-human secrets: the trust gap that CAEP and RISC do not cover."},
   {id:"coord", name:"Response Coordination & Lifecycle", blurb:"Coordination and inventory hygiene rather than threat detection: what was done about a threat, and what exists in the estate."}
 ];
 
@@ -340,7 +339,7 @@ const EVENTS = [
   recommended_actions:["quarantine"]})
 },
 /* ---------- 7 ---------- */
-{n:7, g:"workload", name:"workload-compromise", spec:true,
+{n:7, g:"workload", name:"workload-compromised", spec:true,
  summary:"A deployed application, service, container or function is believed compromised and should no longer be trusted.",
  facts:{sender:"Workload runtime security, supply-chain or SBOM scanning", receiver:"Service mesh, workload identity issuer, OAuth AS, agent platforms", subject:"<code>complex</code>: environment (cluster) plus workload", clears:"<code>trust_status: restored</code>, after a clean redeploy"},
  causes:"The motivating case is a supply-chain attack on a homegrown app running in Kubernetes: a poisoned dependency or build artifact leaves a running app actively compromised. Everything that talks to it should withdraw trust.",
@@ -354,8 +353,8 @@ const EVENTS = [
  ],
  actions:[["revoke-workload-identity",1],["block-service-account-traffic",1],["block-agent-communication",1],["quarantine",1]],
  response:"Revoke the workload's identity, block OAuth and service-to-service traffic for its service account, and stop agents from talking to it.",
- notes:["<b>Overlaps WISE:</b> <a href='wise-event-reference.html#workload-compromised'><code>workload-compromised</code></a> is the same event with a different tense, sent by the trust domain <em>authority</em> rather than a detector. <a href='wise-event-reference.html#workload-provenance-changed'><code>workload-provenance-changed</code></a> covers the supply-chain case separately. This is the sharpest collision point between the two drafts."],
- example:set("https://runtime-sec.example.com/","https://mesh.example.com/ssf","wl-compromise-42",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"workload-compromise",{
+ notes:["<b>Shared name with WISE:</b> under the 2026-09-23 layering, IITP deliberately keeps the same event name as WISE's <a href='wise-event-reference.html#workload-compromised'><code>workload-compromised</code></a>. The two profiles carry the same event from different Transmitters — IITP as a <em>detection</em> at the environment level (typically supply-chain-driven), WISE as an authoritative <em>statement</em> by the trust domain issuer."],
+ example:set("https://runtime-sec.example.com/","https://mesh.example.com/ssf","wl-compromised-42",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"workload-compromised",{
   compromise_type:"supply-chain", trust_status:"untrusted",
   workload:{name:"payments-api",namespace:"prod",cluster:"prod-cluster-eu-1",image:"registry.example.com/payments-api:1.8.3",image_digest:"sha256:5e0c...a91f",service_account:"payments-api-sa",spiffe_id:"spiffe://example.com/ns/prod/sa/payments-api-sa"},
   affected_component:{type:"package",name:"left-pad-utils",version:"4.2.0"},
@@ -368,7 +367,7 @@ const EVENTS = [
 {n:8, g:"workload", name:"anomalous-workload-behavior", spec:false,
  summary:"A workload is behaving unusually at runtime, but compromise has not been confirmed.",
  facts:{sender:"Workload runtime security, eBPF sensors, service-mesh telemetry", receiver:"Service mesh, SOC tooling", subject:"Workload", clears:"Not yet defined. It either escalates to #7 or quietly ends"},
- causes:"A low-confidence tier added on purpose. It gives Receivers a chance to watch or partly contain a workload before a confirmed <code>workload-compromise</code>, and can escalate into one.",
+ causes:"A low-confidence tier added on purpose. It gives Receivers a chance to watch or partly contain a workload before a confirmed <code>workload-compromised</code>, and can escalate into one.",
  triggers:["An unexpected process or shell spawns in a container","New outbound destinations or ports appear","Syscall or API-call patterns drift from the learned baseline"],
  claims:[["behavior_type","—","Kind of anomaly, e.g. process, network or file access."],["baseline_deviation","—","How far from normal."],["workload","—","The workload, likely the same shape as in #7."],["confidence","—","Called out explicitly here, because low confidence is what defines this event."]],
  actions:[["monitor",1],["quarantine",1],["elevate-detection",1]],
@@ -381,52 +380,7 @@ const EVENTS = [
   recommended_actions:["monitor","elevate-detection"]})
 },
 /* ---------- 9 ---------- */
-{n:9, g:"trust", name:"federation-trust-compromise", spec:false,
- summary:"An identity provider, a federation link or a token-signing key is compromised, so assertions from that issuer can no longer be trusted.",
- facts:{sender:"ITDR, IdP security monitoring, threat intel", receiver:"Relying parties, SPs, API gateways", subject:"Issuer, federation or signing key", clears:"Not yet defined. Likely a key-rotation or restored-trust follow-up"},
- causes:"Attacks that forge identity at the source, such as Golden SAML or a stolen signing key. Every per-user signal downstream becomes untrustworthy at once, so the fix has to happen at the issuer level.",
- triggers:["A token-signing certificate or private key is exfiltrated (Golden SAML)","An unauthorized federation trust or IdP is added to a tenant","Forged tokens validate against a legitimate key"],
- claims:[["trust_object","—","What is compromised: issuer, federation link or signing key."],["affected_issuer","—","The issuer whose assertions are suspect."],["compromise_vector","—","How it was compromised."],["valid_from","—","The point in time from which that issuer's assertions should be distrusted."]],
- actions:[["distrust-issuer",0],["force-global-reauth",0],["rotate-signing-keys",0]],
- response:"Stop accepting assertions from the issuer, force re-authentication everywhere, and rotate keys.",
- notes:["<b>Registry gap:</b> none of the likely responses exist in the current <code>recommended_actions</code> registry.","<b>Overlaps WISE:</b> <a href='wise-event-reference.html#trust-domain-federation-revoked'><code>trust-domain-federation-revoked</code></a> states the same fact as a binding <em>decision</em> (credentials MUST be rejected), not a detection."],
- example:set("https://itdr.example.com/","https://sp.example.com/ssf","fed-7",envSub("tenant","contoso.example",{domain:"contoso.example"}),"federation-trust-compromise",{
-  trust_object:{type:"signing-key",kid:"adfs-token-signing-2025"}, affected_issuer:"https://sts.contoso.example/adfs",
-  compromise_vector:"golden-saml", valid_from:1782600000,
-  severity:"critical", confidence:"high", initiating_entity:"detector"})
-},
-/* ---------- 10 ---------- */
-{n:10, g:"trust", name:"secret-exposure", spec:false,
- summary:"A non-human secret, such as a service key, API token or certificate, has been exposed or leaked.",
- facts:{sender:"Secret scanning in repos or logs, leak monitoring", receiver:"Token issuer, secrets manager, API gateway", subject:"Resource or workload", clears:"Not yet defined. Likely a “rotated” status"},
- causes:"A credential that belongs to a machine rather than a person has leaked. CAEP and RISC have nothing to say about it because no human account is involved.",
- triggers:["A cloud access key is committed to a public repository","An API token appears in application logs or a paste site","A private key is baked into a published container image"],
- claims:[["secret_type","—","What kind of secret: access key, API token, certificate, and so on."],["exposure_location","—","Where it was found."],["affected_resource","—","What the secret grants access to."],["rotation_required","—","Whether rotation is required."]],
- actions:[["revoke-workload-identity",1],["revoke-derived-tokens",0],["rotate-secret",0]],
- response:"Revoke any tokens minted from the secret, force rotation, and block the identity it belongs to.",
- notes:["<b>Overlap inside IITP:</b> <code>workload-compromise</code> already has <code>compromise_type: secret-exposure</code>.","<b>Overlaps WISE:</b> <a href='wise-event-reference.html#credential-compromise'><code>credential-compromise</code></a> states the same fact as the credential issuer rather than as a detector."],
- example:set("https://secrets-scan.example.com/","https://iam.example.com/ssf","secret-88",envSub("cloud-account","123456789012",{provider:"aws"}),"secret-exposure",{
-  secret_type:"cloud-access-key", exposure_location:{type:"public-repo",url:"https://git.example.com/acme/tools/blob/main/.env"},
-  affected_resource:{type:"iam-user",id:"arn:aws:iam::123456789012:user/ci-deployer"}, rotation_required:true,
-  severity:"high", confidence:"high", initiating_entity:"detector",
-  recommended_actions:["revoke-workload-identity"]})
-},
-/* ---------- 11 ---------- */
-{n:11, g:"trust", name:"trust-anchor-change", spec:false,
- summary:"A CA, trust-store entry or pinned key has been added, removed or changed.",
- facts:{sender:"Configuration monitoring, PKI tooling, endpoint management", receiver:"TLS terminators, service mesh, relying parties", subject:"<code>environment</code>", clears:"Not yet defined"},
- causes:"Changing what an environment trusts is a quiet way to enable interception or forged identities. The <code>expected</code> claim separates a planned rotation from something to worry about.",
- triggers:["A new root CA is installed into a fleet's trust store","A SPIFFE trust bundle changes outside a change window","A pinned key is replaced"],
- claims:[["anchor_type","—","CA, trust bundle or pinned key."],["change_type","—","Added, removed or modified."],["fingerprint","—","Identifies the anchor."],["expected","—","Whether the change was planned or authorized."]],
- actions:[["distrust-anchor",0],["re-pin",0]],
- response:"Distrust certificates that chain to the new anchor, re-pin, and alert.",
- notes:["<b>Overlaps WISE:</b> <a href='wise-event-reference.html#trust-anchor-changed'><code>trust-anchor-changed</code></a> is the same event and much more detailed: anchor types, five change types, grace periods and bundle URIs."],
- example:set("https://pki-watch.example.com/","https://mesh.example.com/ssf","anchor-3",envSub("k8s-cluster","prod-cluster-eu-1"),"trust-anchor-change",{
-  anchor_type:"root-ca", change_type:"added", fingerprint:"sha256:9f86d0…0f00a08", expected:false,
-  severity:"high", confidence:"high", initiating_entity:"detector"})
-},
-/* ---------- 12 ---------- */
-{n:12, g:"coord", name:"containment-status-change", spec:false,
+{n:9, g:"coord", name:"containment-status-change", spec:false,
  summary:"Something has been isolated, quarantined or released. This is the “action taken” signal.",
  facts:{sender:"SOAR, EDR, or the Receiver of an earlier IITP event", receiver:"Every other party acting on the same incident", subject:"<code>environment</code> or workload", clears:"The event itself records the state change (isolate, then release)"},
  causes:"Several parties responding to one incident need to know what the others have already done, so they don't act twice or lift restrictions too early.",
@@ -434,12 +388,12 @@ const EVENTS = [
  claims:[["containment_action","—","What was done: isolated, quarantined, released, and so on."],["scope","—","What it applied to."],["initiated_by","—","Who or what took the action."]],
  actions:[],
  response:"Keep local state in sync. No enforcement is implied; the purpose is coordination.",
- example:set("https://soar.example.com/","https://mesh.example.com/ssf","wl-compromise-42",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"containment-status-change",{
+ example:set("https://soar.example.com/","https://mesh.example.com/ssf","sc-compromise-42",{format:"complex",environment:envSub("k8s-cluster","prod-cluster-eu-1"),workload:{format:"opaque",id:"payments-api@prod"}},"containment-status-change",{
   containment_action:"quarantined", scope:{workload:"payments-api@prod"}, initiated_by:"soar-playbook:wl-isolate",
   severity:"low", initiating_entity:"system"})
 },
-/* ---------- 13 ---------- */
-{n:13, g:"coord", name:"environment-lifecycle-change", spec:false,
+/* ---------- 10 ---------- */
+{n:10, g:"coord", name:"environment-lifecycle-change", spec:false,
  summary:"An environment was created, cloned, suspended or decommissioned.",
  facts:{sender:"Cloud org management, SaaS admin audit, IaC pipelines", receiver:"Asset inventory, CIEM, IdP", subject:"<code>environment</code>", clears:"n/a, since it's a point-in-time fact"},
  causes:"Inventory hygiene. An environment that appears unexpectedly, such as a shadow tenant or a rogue cloud account, is often the first sign of trouble, and a decommissioned one should stop receiving trust.",
