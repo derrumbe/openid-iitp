@@ -265,17 +265,20 @@
 <div class="wrap">
 
   <table class="docinfo">
-  <tr><td>Shared Signals</td><td>IITP / WISE comparison</td><td>August 2026</td></tr>
+  <tr><td>Shared Signals</td><td>IITP / WISE comparison</td><td>September 2026</td></tr>
   <tr><td>Analysis &mdash; not a working group position</td><td>Discussion draft</td><td>[Page]</td></tr>
 </table>
 
 <header>
     <div class="label">OpenID Shared Signals &middot; profile comparison</div>
-    <h1>IITP and WISE: where two draft profiles collide</h1>
+    <h1>IITP and WISE: two draft profiles, after the layering</h1>
     <p class="lede">
       Both drafts extend the Shared Signals Framework into non-human territory, and both arrived within
-      three weeks of each other. They are not duplicates &mdash; but they are not cleanly separable either.
-      Seven event pairs describe the same facts, and the two drafts disagree about who is allowed to assert them.
+      three weeks of each other. On 2026-09-23 the two sets of proposers agreed a layering: WISE owns the
+      confederacy of running workloads &mdash; federation, non-human credentials, trust anchors &mdash; and
+      IITP owns the environment those workloads run in. Three IITP candidates were retired into WISE.
+      One event, <code>workload-compromised</code>, is now deliberately shared under the same name from
+      two different Transmitters.
     </p>
   </header>
 
@@ -283,11 +286,11 @@
     <div class="card iitp">
       <h3>IITP</h3>
       <div class="who">
-        Internet Infrastructure Threat Profile 1.0 &middot; working group draft, 28 June 2026<br>
+        Internet Infrastructure Threat Profile 1.0 draft 02 &middot; 23 September 2026<br>
         Proposed by Mike Kiser (SailPoint) and Ian Glazer (CrowdStrike)
       </div>
       <dl>
-        <dt>Event types</dt><dd><span class="count">13</span> &mdash; 3 specified, 10 candidates</dd>
+        <dt>Event types</dt><dd><span class="count">10</span> &mdash; 3 specified, 7 candidates</dd>
         <dt>Unit of risk</dt><dd>The environment</dd>
         <dt>Subject</dt><dd>new <code>environment</code> format, plus <code>complex</code></dd>
         <dt>Transmitter</dt><dd>Detection provider &mdash; not authoritative</dd>
@@ -317,7 +320,7 @@
     <figure>
       <div class="figbox">
         <svg viewBox="0 0 900 620" role="img"
-             aria-label="Venn diagram. IITP has seven events of its own, WISE has thirteen of its own, and seven event pairs sit in the overlap describing the same underlying facts.">
+             aria-label="Venn diagram. IITP has seven events of its own, WISE has seventeen of its own, and three event pairs sit in the overlap. One of the three, workload-compromised, is deliberately shared under the same name from two different Transmitters.">
           <text x="265" y="46" text-anchor="middle" class="venn-name" fill="var(--iitp)">IITP</text>
           <text x="265" y="66" text-anchor="middle" class="venn-sub" fill="var(--muted)">the environment</text>
           <text x="635" y="46" text-anchor="middle" class="venn-name" fill="var(--wise)">WISE</text>
@@ -331,39 +334,41 @@
           <text x="243" y="262" text-anchor="middle" class="venn-num" fill="var(--iitp)">7</text>
           <text x="243" y="286" text-anchor="middle" class="venn-cap" fill="var(--iitp)">only here</text>
 
-          <text x="657" y="262" text-anchor="middle" class="venn-num" fill="var(--wise)">13</text>
+          <text x="657" y="262" text-anchor="middle" class="venn-num" fill="var(--wise)">17</text>
           <text x="657" y="286" text-anchor="middle" class="venn-cap" fill="var(--wise)">only here</text>
 
-          <text x="450" y="262" text-anchor="middle" class="venn-num" fill="var(--both)">7</text>
+          <text x="450" y="262" text-anchor="middle" class="venn-num" fill="var(--both)">3</text>
           <text x="450" y="285" text-anchor="middle" class="venn-cap" fill="var(--both)">pairs</text>
 
           <line x1="450" y1="440" x2="450" y2="486" stroke="var(--both)" stroke-width="1" stroke-dasharray="3 3"/>
           <text x="450" y="507" text-anchor="middle" class="venn-sub" fill="var(--both)">
-            6 IITP events map onto 7 WISE events
+            one pair shares a name
           </text>
           <text x="450" y="527" text-anchor="middle" class="venn-sub" fill="var(--muted)">
-            <tspan class="mono">workload-compromise</tspan> answers two of them
+            <tspan class="mono">workload-compromised</tspan>, from two Transmitters
           </text>
 
           <text x="243" y="560" text-anchor="middle" class="venn-sub" fill="var(--muted)">cloud control plane,</text>
-          <text x="243" y="578" text-anchor="middle" class="venn-sub" fill="var(--muted)">tenants, campaigns</text>
-          <text x="657" y="560" text-anchor="middle" class="venn-sub" fill="var(--muted)">credential and workload</text>
-          <text x="657" y="578" text-anchor="middle" class="venn-sub" fill="var(--muted)">lifecycle, policy, posture</text>
+          <text x="243" y="578" text-anchor="middle" class="venn-sub" fill="var(--muted)">tenants, campaigns, supply chain</text>
+          <text x="657" y="560" text-anchor="middle" class="venn-sub" fill="var(--muted)">credential and workload lifecycle,</text>
+          <text x="657" y="578" text-anchor="middle" class="venn-sub" fill="var(--muted)">policy, posture, federation, trust anchors</text>
         </svg>
       </div>
       <figcaption>
-        Of IITP&rsquo;s 13 candidate events and WISE&rsquo;s 20 specified events, seven pairs describe the same
-        underlying fact. The contested ground is narrow but it is the most security-critical part of both
-        drafts: workload compromise, trust material, and credential exposure.
+        Of IITP&rsquo;s 10 candidate events and WISE&rsquo;s 20 specified events, three pairs describe the same
+        underlying fact. Three earlier IITP candidates &mdash; on federation, non-human credentials, and trust
+        anchors &mdash; have been retired into WISE. One remaining event, <code>workload-compromised</code>,
+        is deliberately carried by both profiles under the same name.
       </figcaption>
     </figure>
   </section>
 
   <section>
-    <h2>The seven collisions</h2>
+    <h2>The three remaining overlaps</h2>
     <p class="prose">
-      Three of these are near-homographs &mdash; the same event under the same name, differing only by tense.
-      The other four describe one fact from two directions.
+      Two are near-homographs &mdash; the same event under a slightly different name, differing mostly by
+      tense or scope. The third, <code>workload-compromised</code>, is the one place the layering deliberately
+      leaves both profiles speaking: same event name, two Transmitters, two different vantage points.
     </p>
     <div class="scroll">
       <table>
@@ -377,13 +382,15 @@
         </thead>
         <tbody>
           <tr>
-            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#workload-compromise"><code>workload-compromise</code></a></td>
+            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#workload-compromised"><code>workload-compromised</code></a></td>
             <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#workload-compromised"><code>workload-compromised</code></a></td>
-            <td><span class="pill direct">Same name</span></td>
-            <td>IITP&rsquo;s is far richer &mdash; <code>compromise_type</code>, <code>trust_status</code>, a workload
-                object carrying <code>spiffe_id</code>, plus <code>affected_component</code> and <code>indicators</code>.
-                WISE&rsquo;s carries only <code>detection_method</code>. Note IITP reaches for a SPIFFE ID here,
-                which is WISE&rsquo;s native identifier.</td>
+            <td><span class="pill direct">Shared name</span></td>
+            <td>Deliberately the same event name from two Transmitters. IITP sends it as an environment-level
+                detection, typically supply-chain-driven &mdash; <code>compromise_type</code>,
+                <code>trust_status</code>, a workload object carrying <code>spiffe_id</code>, plus
+                <code>affected_component</code> and <code>indicators</code>. WISE sends it as an authoritative
+                statement by the trust domain issuer, carrying <code>detection_method</code>. A receiver
+                treats both as the same event; the Transmitter tells it which vantage point produced it.</td>
           </tr>
           <tr>
             <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#anomalous-workload-behavior"><code>anomalous-workload-behavior</code></a></td>
@@ -393,43 +400,11 @@
                 almost identical words. Functionally interchangeable.</td>
           </tr>
           <tr>
-            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#trust-anchor-change"><code>trust-anchor-change</code></a></td>
-            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#trust-anchor-changed"><code>trust-anchor-changed</code></a></td>
-            <td><span class="pill direct">Same name</span></td>
-            <td>WISE is substantially deeper: <code>x509_ca</code> vs <code>jwks</code>, five change types,
-                <code>effective_at</code>, <code>old_material_expiry</code> for grace periods, and URIs to fetch
-                the new bundle. IITP has four fields and no rotation semantics.</td>
-          </tr>
-          <tr>
-            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#secret-exposure"><code>secret-exposure</code></a></td>
-            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#credential-compromise"><code>credential-compromise</code></a></td>
-            <td><span class="pill">Same fact</span></td>
-            <td>Both cover non-human credential exposure. IITP frames it as a leak discovered in the
-                environment; WISE as a statement by the credential&rsquo;s issuer, sitting in a lifecycle
-                alongside <code>credential-revoked</code>.</td>
-          </tr>
-          <tr>
-            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#federation-trust-compromise"><code>federation-trust-compromise</code></a></td>
-            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#trust-domain-federation-revoked"><code>trust-domain-federation-revoked</code></a></td>
-            <td><span class="pill">Opposed framing</span></td>
-            <td>The clearest illustration of the split. IITP reports a <em>detection</em> &mdash; Golden SAML,
-                a stolen signing key. WISE reports a <em>decision</em>: federation is revoked and credentials
-                &ldquo;MUST be rejected.&rdquo; Same event, one observed, one declared.</td>
-          </tr>
-          <tr>
             <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#critical-vulnerability-exposed"><code>critical-vulnerability-exposed</code></a></td>
             <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#workload-vulnerability-status-changed"><code>workload-vulnerability-status-changed</code></a></td>
             <td><span class="pill">Same fact</span></td>
             <td>WISE follows the VEX model, so it is bidirectional &mdash; it can also say <code>not_affected</code>
                 or <code>fixed</code> and relax a prior warning. IITP only raises the alarm; nothing lowers it.</td>
-          </tr>
-          <tr>
-            <td class="ev c-iitp"><a class="evlink" href="iitp-event-reference.html#workload-compromise"><code>workload-compromise</code></a> <span class="pill spec">supply-chain</span></td>
-            <td class="ev c-wise"><a class="evlink" href="wise-event-reference.html#workload-provenance-changed"><code>workload-provenance-changed</code></a></td>
-            <td><span class="pill">Partial</span></td>
-            <td>IITP folds supply-chain poisoning into one compromise event with an
-                <code>affected_component</code>. WISE separates provenance as its own signal with SBOM and
-                attestation URIs, so it can report a provenance change that is not yet a compromise.</td>
           </tr>
         </tbody>
       </table>
@@ -455,12 +430,15 @@
         </ul>
       </div>
       <div class="lane wise">
-        <span class="label">WISE alone &mdash; 13 events</span>
+        <span class="label">WISE alone &mdash; 17 events</span>
         <ul>
           <li><div class="grouphead">Credential lifecycle</div></li>
-          <li><a class="evlink" href="wise-event-reference.html#credential-issued"><code>credential-issued</code></a> <a class="evlink" href="wise-event-reference.html#credential-rotated"><code>credential-rotated</code></a> <a class="evlink" href="wise-event-reference.html#credential-revoked"><code>credential-revoked</code></a> <a class="evlink" href="wise-event-reference.html#credential-renewal-failure"><code>credential-renewal-failure</code></a><span>The full issuance lifecycle. IITP has no concept of a credential being issued or rotated at all.</span></li>
+          <li><a class="evlink" href="wise-event-reference.html#credential-issued"><code>credential-issued</code></a> <a class="evlink" href="wise-event-reference.html#credential-rotated"><code>credential-rotated</code></a> <a class="evlink" href="wise-event-reference.html#credential-revoked"><code>credential-revoked</code></a> <a class="evlink" href="wise-event-reference.html#credential-renewal-failure"><code>credential-renewal-failure</code></a> <a class="evlink" href="wise-event-reference.html#credential-compromise"><code>credential-compromise</code></a><span>The full issuance lifecycle, plus compromise as an authoritative statement by the issuer. IITP has no concept of a credential being issued or rotated at all; it retired its own <code>secret-exposure</code> candidate into WISE&rsquo;s <code>credential-compromise</code>.</span></li>
+          <li><div class="grouphead">Federation &amp; trust anchors</div></li>
+          <li><a class="evlink" href="wise-event-reference.html#trust-anchor-changed"><code>trust-anchor-changed</code></a> <a class="evlink" href="wise-event-reference.html#trust-domain-federation-revoked"><code>trust-domain-federation-revoked</code></a><span>Rotation of the material a trust domain publishes, and revocation of a federation between two trust domains. IITP retired its own <code>trust-anchor-change</code> and <code>federation-trust-compromise</code> candidates into these under the 2026-09-23 layering.</span></li>
           <li><div class="grouphead">Workload lifecycle</div></li>
           <li><a class="evlink" href="wise-event-reference.html#workload-disabled"><code>workload-disabled</code></a> <a class="evlink" href="wise-event-reference.html#workload-enabled"><code>workload-enabled</code></a> <a class="evlink" href="wise-event-reference.html#workload-purged"><code>workload-purged</code></a><span>Administrative state of a workload, independent of any threat.</span></li>
+          <li><a class="evlink" href="wise-event-reference.html#workload-provenance-changed"><code>workload-provenance-changed</code></a><span>Provenance change on a workload, with SBOM and attestation URIs &mdash; a signal that is not yet a compromise.</span></li>
           <li><div class="grouphead">Policy &amp; posture evaluation</div></li>
           <li><a class="evlink" href="wise-event-reference.html#issuance-policy-changed"><code>issuance-policy-changed</code></a> <a class="evlink" href="wise-event-reference.html#validation-policy-changed"><code>validation-policy-changed</code></a> <a class="evlink" href="wise-event-reference.html#posture-evaluation-policy-changed"><code>posture-evaluation-policy-changed</code></a><span>Changes to the rules themselves &mdash; a category IITP does not model.</span></li>
           <li><a class="evlink" href="wise-event-reference.html#posture-evaluation-failed"><code>posture-evaluation-failed</code></a> <a class="evlink" href="wise-event-reference.html#posture-evaluation-succeeded"><code>posture-evaluation-succeeded</code></a><span>Outcomes of an evaluation, including the success case.</span></li>
@@ -480,7 +458,7 @@
     <figure>
       <div class="figbox">
         <svg viewBox="0 0 900 300" role="img"
-             aria-label="Two flows compared. In WISE a trust domain authority sends an authoritative statement and the relying party must reject the credential. In IITP a detection provider sends an advisory detection and the receiver decides its own response.">
+             aria-label="Two flows compared, both carrying workload-compromised. In WISE a trust domain authority sends an authoritative statement and the relying party must reject the workload's credentials. In IITP a detection provider sends an advisory detection and the receiver decides its own response.">
           <defs>
             <marker id="ar-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--wise)"/>
@@ -493,15 +471,15 @@
           <text x="20" y="30" class="venn-cap" fill="var(--wise)">WISE</text>
           <rect x="20" y="46" width="228" height="62" rx="6" fill="var(--wise-soft)" stroke="var(--wise)" stroke-width="1.3"/>
           <text x="134" y="72" text-anchor="middle" class="flow-t" fill="var(--ink)">Trust domain authority</text>
-          <text x="134" y="92" text-anchor="middle" class="flow-s" fill="var(--muted)">issued the credential</text>
+          <text x="134" y="92" text-anchor="middle" class="flow-s" fill="var(--muted)">issued the workload identity</text>
 
           <line x1="256" y1="77" x2="524" y2="77" stroke="var(--wise)" stroke-width="1.6" marker-end="url(#ar-w)"/>
           <text x="390" y="66" text-anchor="middle" class="flow-s" fill="var(--wise)">authoritative statement</text>
-          <text x="390" y="97" text-anchor="middle" class="flow-s" fill="var(--muted)">&ldquo;federation revoked&rdquo;</text>
+          <text x="390" y="97" text-anchor="middle" class="flow-s" fill="var(--muted)">&ldquo;workload-compromised&rdquo;</text>
 
           <rect x="532" y="46" width="228" height="62" rx="6" fill="var(--wise-soft)" stroke="var(--wise)" stroke-width="1.3"/>
           <text x="646" y="72" text-anchor="middle" class="flow-t" fill="var(--ink)">Relying party</text>
-          <text x="646" y="92" text-anchor="middle" class="flow-s" fill="var(--wise)">MUST reject credentials</text>
+          <text x="646" y="92" text-anchor="middle" class="flow-s" fill="var(--wise)">MUST reject its credentials</text>
 
           <line x1="20" y1="150" x2="880" y2="150" stroke="var(--rule)" stroke-width="1"/>
 
@@ -512,7 +490,7 @@
 
           <line x1="256" y1="233" x2="524" y2="233" stroke="var(--iitp)" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#ar-i)"/>
           <text x="390" y="222" text-anchor="middle" class="flow-s" fill="var(--iitp)">advisory detection</text>
-          <text x="390" y="253" text-anchor="middle" class="flow-s" fill="var(--muted)">+ recommended_actions</text>
+          <text x="390" y="253" text-anchor="middle" class="flow-s" fill="var(--muted)">&ldquo;workload-compromised&rdquo; + recommended_actions</text>
 
           <rect x="532" y="202" width="228" height="62" rx="6" fill="var(--iitp-soft)" stroke="var(--iitp)" stroke-width="1.3"/>
           <text x="646" y="228" text-anchor="middle" class="flow-t" fill="var(--ink)">Receiver</text>
@@ -523,21 +501,24 @@
         </svg>
       </div>
       <figcaption>
-        The same fact &mdash; a federation is no longer trustworthy &mdash; carries opposite normative force in
-        the two drafts. WISE&rsquo;s transmitter is the authority that issued the credential, so it can oblige the
-        receiver. IITP&rsquo;s transmitter merely observed something, so it explicitly cannot.
+        The one event both profiles still carry &mdash; <code>workload-compromised</code> &mdash; travels with
+        opposite normative force depending on who sent it. WISE&rsquo;s Transmitter is the trust domain authority
+        that issued the workload identity, so it can oblige the relying party. IITP&rsquo;s Transmitter merely
+        observed something, so it explicitly cannot. The layering leaves this event shared on purpose so a
+        receiver can hear the same fact from either vantage point.
       </figcaption>
     </figure>
 
     <div class="findings">
       <div class="finding">
-        <h3>Authority is the real fault line</h3>
+        <h3>Authority is why the layering works</h3>
         <p>
           WISE events are assertions by the party with standing to make them: a trust domain authority speaking
           about credentials it issued. IITP events are detections by a party with no standing at all &mdash; the
-          draft says plainly that a receiver &ldquo;MUST NOT treat these as commands,&rdquo; and that the receiver
-          is responsible for avoiding self-inflicted denial of service. Two events with the same name and the
-          same payload mean different things depending on which profile emitted them.
+          draft says plainly that a receiver &ldquo;MUST NOT treat these as commands.&rdquo; The 2026-09-23
+          layering routes each event to the Transmitter best positioned to assert it. <code>workload-compromised</code>
+          is the deliberate exception: both vantage points are useful, so both profiles carry it, and the
+          Transmitter tells the receiver which is speaking.
         </p>
       </div>
       <div class="finding">
@@ -547,6 +528,8 @@
           <code>confidence</code>, and <code>recommended_actions</code>, and receivers are told to weight
           automated enforcement by them. WISE has <code>severity</code> on exactly two events and no notion of
           confidence &mdash; consistent with a profile where the transmitter is authoritative and simply correct.
+          On the shared <code>workload-compromised</code> event this shows up directly in the payload: IITP&rsquo;s
+          version carries confidence and recommended actions, WISE&rsquo;s does not.
         </p>
       </div>
       <div class="finding">
@@ -555,49 +538,52 @@
           WISE identifies subjects with <code>wimse://</code> or <code>spiffe://</code> URIs rooted in a trust
           domain. IITP invents an <code>environment</code> subject format and reaches for <code>complex</code>
           when it needs a workload &mdash; then puts <code>spiffe_id</code> inside the event payload rather than
-          the subject. For the same compromised container, the two profiles disagree about the subject, which is
-          the one field a receiver routes on.
+          the subject. For the shared <code>workload-compromised</code> event, the two profiles carry the same
+          event name but disagree about the subject, which is the one field a receiver routes on.
         </p>
       </div>
       <div class="finding">
-        <h3>Both leave the clearing story half-built</h3>
+        <h3>Neither can retract a compromise assertion</h3>
         <p>
           IITP has a consistent follow-up pattern &mdash; <code>reverted</code>, <code>resolved</code>,
           <code>restored</code> &mdash; but only for its three specified events. WISE only reverses on
           vulnerability status, via VEX. Neither can currently retract a compromise assertion, which matters
-          most for exactly the events that overlap.
+          most for the one event they still share.
         </p>
       </div>
     </div>
   </section>
 
   <section>
-    <h2>What this suggests for the way forward</h2>
+    <h2>What the layering resolved</h2>
     <p class="prose">
-      The two drafts are not competing for the same territory overall. Across 27 distinct facts between them,
-      20 are uncontested &mdash; roughly three quarters. IITP owns the cloud control plane and tenant-level
-      campaigns; WISE owns the credential and workload lifecycle. Neither could absorb the other without
-      becoming something it isn&rsquo;t.
+      The two drafts are no longer competing for the same territory. Of 24 distinct facts between them (10 IITP
+      events, 20 WISE events, 3 pairs overlapping and one of those a deliberate shared-name pair), 21 are
+      uncontested &mdash; nearly seven eighths. IITP owns the cloud control plane, tenant-level campaigns, and
+      supply-chain integrity in the environment. WISE owns the credential and workload lifecycle, federation,
+      trust anchors, and posture policy inside the trust domain.
     </p>
     <p class="prose">
-      The seven collisions are concentrated and tractable. Three are the same event under a different tense,
-      and in each case one draft is clearly further along: WISE on trust anchors and vulnerability status,
-      IITP on workload compromise. The obvious move is to assign each contested event to whichever profile
-      already models it better, and have the other reference it rather than restate it &mdash; the pattern IITP
-      already uses toward CAEP and RISC, where it tells transmitters to prefer the existing event.
+      Three earlier IITP candidates &mdash; <code>federation-trust-compromise</code>, <code>secret-exposure</code>,
+      and <code>trust-anchor-change</code> &mdash; were retired in favour of the equivalent WISE events under
+      the 2026-09-23 layering. IITP&rsquo;s <code>workload-compromise</code> was renamed
+      <code>workload-compromised</code> to align with WISE, and the two profiles now carry that event under the
+      same name from two different Transmitters: IITP as an environment-level detection, typically
+      supply-chain-driven; WISE as an authoritative statement by the trust domain issuer.
     </p>
     <p class="prose">
-      The authority split is the part that needs a decision rather than an edit. It is a genuine architectural
-      disagreement about what a Shared Signals transmitter is entitled to assert, and it will surface again in
-      any future profile written by detection vendors rather than issuing authorities.
+      The authority split that produced the layering is the reason it holds: each event now sits with the
+      Transmitter that has standing to assert it. On the shared event, the receiver reads the two versions
+      as complementary rather than duplicative &mdash; the outside view and the inside view of the same fact.
     </p>
   </section>
 
   <footer>
-    Compiled from the IITP proposed charter, IITP event catalog, and IITP 1.0 working group draft
-    (all 28 June 2026), and OpenID WISE Profile Specification 1.0 draft 02 (19 July 2026). Event counts are
-    from the drafts as read; overlap pairings and the authority analysis are an assessment, not a working
-    group position. Neither document is an OpenID Foundation publication.
+    Compiled from the IITP proposed charter, IITP event catalog, and IITP 1.0 working group draft 02
+    (all 23 September 2026, after the 2026-09-23 layering with the WISE proposers), and OpenID WISE Profile
+    Specification 1.0 draft 02 (19 July 2026). Event counts are from the drafts as read; overlap pairings and
+    the authority analysis are an assessment, not a working group position. Neither document is an OpenID
+    Foundation publication.
   </footer>
 
 </div>
